@@ -1,0 +1,36 @@
+KLASSEN-ORGANIZER ALS APP AUF DEM IPAD
+=====================================
+
+Inhalt des Ordners
+  index.html            – die App
+  manifest.webmanifest  – Name und Symbol der App
+  sw.js                 – Offline-Speicher
+  icons/                – App-Symbole
+
+1) ORDNER INS INTERNET STELLEN (einmalig, am besten am Computer)
+
+  Weg A – Netlify (am einfachsten)
+    1. https://app.netlify.com/drop öffnen und kostenloses Konto anlegen
+    2. Den ganzen Ordner "klassen-organizer-app" auf die Seite ziehen
+    3. Netlify zeigt eine Adresse wie https://irgendwas.netlify.app
+       (unter "Site configuration → Change site name" kannst du sie umbenennen)
+
+  Weg B – GitHub Pages
+    1. Auf github.com ein Konto und ein neues Repository anlegen (öffentlich)
+    2. "Add file → Upload files": alle Dateien und den Ordner icons hochladen
+    3. Settings → Pages → Branch "main" wählen → Save
+    4. Nach ca. 1 Minute ist die App unter https://NAME.github.io/REPO/ erreichbar
+
+2) AUF DEM IPAD INSTALLIEREN
+    1. Die Adresse in SAFARI öffnen
+    2. Teilen-Symbol → "Zum Home-Bildschirm" → Hinzufügen
+    3. Ab jetzt die App immer über das Symbol auf dem Home-Bildschirm starten
+       (nicht über Safari – dort wären die Daten getrennt)
+
+3) WICHTIG
+  - Alle Schülerdaten bleiben nur auf dem iPad. Im Internet liegt nur das leere Programm.
+  - Die App funktioniert auch offline (z. B. in der Turnhalle).
+  - Daten aus der Online-Version übernehmen: dort "⋯ → Sicherung exportieren",
+    in der App auf dem Startbildschirm "Aus Sicherung importieren".
+  - Regelmäßig eine Sicherung exportieren (z. B. in die Dateien-App / ByCS-Drive).
+  - Update: neue index.html hochladen – die App holt sie beim nächsten Start mit Internet.
