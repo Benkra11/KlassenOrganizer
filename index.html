@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Klassen">
 <meta name="theme-color" content="#1f5f5b">
 <link rel="manifest" href="manifest.webmanifest">
@@ -34,6 +34,8 @@
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
   font:15px/1.35 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;overscroll-behavior:none}
 body{display:flex;flex-direction:column;height:100dvh;padding:var(--sat) var(--sar) 0 var(--sal)}
+/* Als Web-App vom Home-Bildschirm: Statusleiste überlagert die Seite – oben immer genug Abstand lassen */
+@media (display-mode: standalone){ body{padding-top:max(var(--sat),24px)} .seats{padding-top:max(var(--sat),24px)!important} .clk{padding-top:calc(max(var(--sat),24px) + 10px)!important} .sw.big .clk-head{padding-top:max(var(--sat),24px)!important} }
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
 input,textarea,select{font:inherit;font-size:16px;color:var(--ink)}
 .hidden{display:none!important}
@@ -73,14 +75,15 @@ input,textarea,select{font:inherit;font-size:16px;color:var(--ink)}
 
 /* Sheet */
 main{flex:1;min-height:0;position:relative;background:var(--paper)}
-.sheet{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;padding-bottom:var(--sab)}
+.sheet{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:separate;border-spacing:0;min-width:100%}
 th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:0;background:var(--paper)}
 /* Zeilen abwechselnd einfärben (niedrige Spezifität: farbige Zellen behalten ihre Farbe) */
 :where(tbody tr:nth-child(even))>td{background:color-mix(in srgb,var(--accent) 4%,var(--paper))}
 tbody tr:nth-child(even)>td.c-avg{background:color-mix(in srgb,var(--accent) 4%,var(--bg))}
 thead th{position:sticky;top:0;z-index:3;background:var(--paper);border-bottom:2px solid var(--line2);vertical-align:bottom}
-tfoot td{position:sticky;bottom:0;z-index:3;background:var(--bg);border-top:2px solid var(--line2);vertical-align:top}
+tfoot td{position:sticky;bottom:0;z-index:3;background:var(--bg);border-top:2px solid var(--line2);vertical-align:top;padding-bottom:var(--sab)}
+/* Sicherheitsabstand unten (Home-Leiste) gehört in die Fußzeile – sonst scrollen Zeilen unter ihr durch */
 .c-name{position:sticky;left:0;z-index:2;min-width:220px;max-width:260px;border-right:2px solid var(--line2)}
 thead .c-name,tfoot .c-name{z-index:4}
 .namecell{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:6px 12px;text-align:left}
@@ -330,8 +333,11 @@ table td.c-avg,table th.c-avg,table tbody tr:nth-child(n)>td.c-avg,table tfoot t
 .tabs{gap:4px} .tab .cdot{display:none}
 .tab{border:0;border-radius:0;background:transparent;padding:6px 11px 9px;min-height:34px;font-size:15px;margin-bottom:0;border-bottom:3px solid color-mix(in srgb,var(--tc,var(--line2)) 35%,transparent);color:color-mix(in srgb,var(--tc,var(--muted)) 85%,var(--ink))}
 .tab{font-weight:500}
-.tab.active{background:var(--tc,var(--accent));color:#fff;font-weight:800;border-radius:10px 10px 0 0;border-bottom-color:var(--tc,var(--accent))}
-.tab:not(.active) .edit{display:none} .tab.active .edit{color:#fff;opacity:.85}
+/* Kopfzeile weiß; aktiver Tab in der Farbe des Hauptfensters mit Farbstreifen oben, ohne Strich unten */
+.tabrow{background:#fff;position:relative;z-index:5}
+@media (prefers-color-scheme:dark){.tabrow{background:var(--paper0)}}
+.tab.active{background:color-mix(in srgb,var(--tint,var(--accent)) 13%,var(--paper0));color:var(--ink);font-weight:800;border-top:4px solid var(--tc,var(--accent));border-bottom:0;border-radius:8px 8px 0 0;padding-bottom:12px;position:relative;z-index:6}
+.tab:not(.active) .edit{display:none} .tab.active .edit{color:var(--muted)}
 .tab.add{border-bottom-color:transparent;color:var(--accent)}
 /* Infos, Kalender, Sitzplan nur als Symbol */
 .bar .btn:not([data-act=more]){font-size:0;gap:0;padding:0 11px;min-width:44px;justify-content:center} .bar .btn:not([data-act=more]) svg{width:21px;height:21px}
@@ -2326,6 +2332,7 @@ async function moreDialog() {
     <div class="field"><label>Schüler</label><div class="row"><button class="btn primary" data-x="names">Namensliste einfügen</button><button class="btn" data-x="sort">Liste alphabetisch sortieren</button></div></div>
     <div class="field"><label>Aktuelle Klasse</label><div class="row"><button class="btn" data-x="csv">Als Tabelle kopieren (Excel)</button></div></div>
     <div class="field"><label>Sicherung</label><div class="row"><button class="btn primary" data-x="file">Sicherung als Datei speichern</button><button class="btn" data-x="backup">Sicherung kopieren</button><button class="btn" data-x="import">Sicherung importieren…</button></div>
+      <button class="btn danger" data-x="wipe" style="margin-top:8px">Alle Daten auf diesem Gerät löschen…</button>
     <label class="check"><input type="checkbox" id="bph"> Fotos in die Sicherung aufnehmen (größer)</label>
     <label class="check"><input type="checkbox" id="benc" ${canEncrypt() ? "checked" : "disabled"}> Mit Passwort verschlüsseln${canEncrypt() ? "" : " (in dieser App nicht verfügbar)"}</label>
     <div id="bpw" class="row" style="gap:8px;margin-top:4px"><input class="inp" type="password" id="bpw1" placeholder="Passwort" autocomplete="new-password" style="flex:1;min-width:140px"><input class="inp" type="password" id="bpw2" placeholder="Passwort wiederholen" autocomplete="new-password" style="flex:1;min-width:140px"></div>
@@ -2374,6 +2381,12 @@ async function moreDialog() {
         } else { copyText(json, "Sicherung"); lsSet("ko_lastBackup", Date.now()); }
       }
       if (x === "import") { close(); importDialog(); }
+      if (x === "wipe") { close(); confirmDlg("Alle Klassen, Noten, Fotos und Termine werden auf diesem Gerät gelöscht. Vorher am besten eine Sicherung speichern.", "Alles löschen").then(ok => {
+        if (!ok) return;
+        clearTimeout(store.timer); store.dirty.clear();   // nichts mehr zurückschreiben
+        try { Object.keys(localStorage).filter(k => k.startsWith("ko_")).forEach(k => localStorage.removeItem(k)); } catch {}
+        location.reload();
+      }); }
       });
     });
 }
