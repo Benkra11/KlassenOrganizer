@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Klassen">
-<meta name="theme-color" content="#1f5f5b">
+<meta name="theme-color" content="#ffffff">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="icon" type="image/png" href="icons/icon-192.png">
@@ -36,6 +36,8 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);
 body{display:flex;flex-direction:column;height:100dvh;padding:var(--sat) var(--sar) 0 var(--sal)}
 /* Als Web-App vom Home-Bildschirm: Statusleiste überlagert die Seite – oben immer genug Abstand lassen */
 @media (display-mode: standalone){ body{padding-top:max(var(--sat),24px)} .seats{padding-top:max(var(--sat),24px)!important} .clk{padding-top:calc(max(var(--sat),24px) + 10px)!important} .sw.big .clk-head{padding-top:max(var(--sat),24px)!important} }
+/* Web-App: Statusleiste (Uhrzeit, Datum) auf weißem Grund */
+@media (display-mode: standalone){ body:before{content:"";position:fixed;top:0;left:0;right:0;height:max(var(--sat),24px);background:#fff;z-index:9999;pointer-events:none} }
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;touch-action:manipulation}
 input,textarea,select{font:inherit;font-size:16px;color:var(--ink)}
 .hidden{display:none!important}
