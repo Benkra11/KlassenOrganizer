@@ -209,6 +209,7 @@ textarea.inp{min-height:220px;resize:vertical;line-height:1.45}
 .chip .nm{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .seat-action{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;background:var(--paper);border-top:1px solid var(--line)}
 .seat-action .msg{margin-right:auto;font-size:14px}
+.seat-action .snote{flex:1 1 200px;min-width:150px;max-width:380px;height:38px;padding:6px 10px;font-size:16px}
 @media (max-width:760px){
   .seats-body{flex-direction:column}
   .pool{width:auto;border-left:0;border-top:1px solid var(--line);max-height:34%}
@@ -404,8 +405,46 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
 .field.need .seg{outline:2px solid var(--no);outline-offset:2px;border-radius:12px}
 .ctag{margin-left:auto;font-size:11px;font-weight:500;color:var(--muted);opacity:.75;padding:0 2px;flex-shrink:0}
 
+.colhead{position:relative} .donechk{position:absolute;top:5px;right:5px;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--ok);color:#fff;font-size:10px;font-weight:800;line-height:1}
+.donetgl{display:flex;align-items:center;gap:8px;margin:0 0 12px;font-size:15px}
+.ansch{display:block;margin-top:3px;font-size:12px;color:var(--muted);white-space:nowrap} .ansch b{display:inline!important;color:var(--ink);font-size:13px!important}
+.itgrp{background:var(--bg);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:12px;padding:8px 12px;margin-bottom:8px} .itgrp.wahl{border-left-color:var(--muted)}
+.itgrp>b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
+.itmod{display:flex;gap:10px;padding:4px 0;font-size:16px} .itmod .nr{min-width:44px;color:var(--muted);font-variant-numeric:tabular-nums} .itmod sup{color:var(--muted);margin-left:2px}
 .toast{position:fixed;left:50%;bottom:calc(20px + var(--sab));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:12px;font-size:14px;z-index:90;box-shadow:var(--shadow);max-width:90vw}
 .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted)}
+
+/* Sport: Gruppen + Kamera */
+.btn.grpbtn{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.cambtn{background:#3d4a5c;border-color:#3d4a5c;color:#fff}
+.grp .gbody{flex:1;overflow:auto;padding-bottom:10px}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.gcard{background:var(--paper);border:1px solid var(--line);border-top:6px solid var(--tc);border-radius:14px;padding:10px 12px;min-height:120px}
+.gcard.tgt{outline:3px dashed var(--tc);outline-offset:2px;cursor:pointer}
+.gname{flex:1;min-width:0;font:inherit;font-weight:800;font-size:19px;color:var(--ink);background:transparent;border:1px solid transparent;border-radius:8px;padding:3px 6px;margin-left:-4px}
+.gname:hover{border-color:var(--line)} .gname:focus{outline:none;border-color:var(--tc);background:var(--bg)}
+.ghead{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:800;font-size:19px} .ghead i{width:18px;height:18px;border-radius:5px;background:var(--tc)} .ghead small{margin-left:auto;font-size:13px;color:var(--muted);font-weight:700}
+.gstu{display:flex;align-items:center;gap:10px;padding:5px 6px;margin:0 -6px;font-size:17px;font-weight:600;border-radius:10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gstu .av{width:36px;height:36px;font-size:12px} .gstu.sel{background:color-mix(in srgb,var(--tc) 22%,var(--paper));outline:2px solid var(--tc)}
+.gkl{font-size:11px;color:var(--muted);font-weight:700;margin-left:auto}
+.gabs{margin-top:16px} .gabs .row{gap:6px;flex-wrap:wrap}
+.gchip{border:1px solid var(--line2);background:var(--paper);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:600;color:var(--ink)} .gchip.off{background:var(--no-soft);border-color:var(--no);color:var(--no);text-decoration:line-through}
+.cam{background:#000;color:#fff;padding:0;gap:0}
+.camstage{position:absolute;inset:0;overflow:hidden;background:#000}
+.camstage canvas{width:100%;height:100%;object-fit:cover;display:block} .camstage.fit canvas{object-fit:contain} .camstage canvas.mir{transform:scaleX(-1)}
+.camui{position:absolute;z-index:2;top:calc(var(--sat) + 10px);left:calc(var(--sal) + 10px);right:calc(var(--sar) + 10px);display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;transition:opacity .5s}
+.cam.idle .camui,.cam.idle .cambadge{opacity:.22}
+.cam .seg{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.18);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.cam .seg button{white-space:nowrap;color:rgba(255,255,255,.85);font-size:13px;min-height:30px;padding:0 8px} .cam .seg button.on{background:rgba(255,255,255,.85);color:#000}
+.cam .btn{background:rgba(0,0,0,.35);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.9);font-size:13px;min-height:32px;padding:0 10px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.camlbl{font-size:12px;font-weight:700;opacity:.7;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.cambadge{position:absolute;z-index:2;bottom:calc(var(--sab) + 12px);left:calc(var(--sal) + 12px);background:rgba(0,0,0,.35);padding:3px 9px;border-radius:999px;font-weight:700;font-size:13px;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.85);transition:opacity .5s}
+.cambadge i{width:8px;height:8px;border-radius:50%;background:#e5413b;animation:camblink 1.2s infinite} .cambadge.pz i{animation:none;background:#e0b000}
+@keyframes camblink{50%{opacity:.25}}
+.cammsg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:24px;font-size:16px;font-weight:600;color:rgba(255,255,255,.7)}
+.cammsg .big{font-size:min(18vh,14vw);font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.55)}
+.cammsg p{font-size:14px;font-weight:500;opacity:.75;max-width:520px;margin:0}
+.cambar{position:absolute;left:0;bottom:0;height:3px;background:#e5413b;opacity:.7;transition:width .2s linear}
 </style>
 </head>
 <body>
@@ -416,6 +455,8 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
   <button class="btn" data-act="info" title="Infos" aria-label="Infos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>Infos</button>
   <button class="btn calbtn" data-act="cal" title="Kalender" aria-label="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
   <button class="btn primary" data-act="seats" title="Sitzplan" aria-label="Sitzplan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="6" rx="1.5"/><rect x="14" y="3" width="7" height="6" rx="1.5"/><rect x="3" y="14" width="7" height="6" rx="1.5"/><rect x="14" y="14" width="7" height="6" rx="1.5"/></svg>Sitzplan</button>
+  <button class="btn grpbtn hidden" data-act="groups" title="Gruppen" aria-label="Gruppen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1"/><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M17 10h2a2 2 0 0 1 2 2v1"/><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0"/><path d="M3 13v-1a2 2 0 0 1 2 -2h2"/></svg>Gruppen</button>
+  <button class="btn cambtn hidden" data-act="cam" title="Kamera (zeitverzögert)" aria-label="Kamera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/></svg>Kamera</button>
   <button class="btn tourbtn hidden" data-act="tour" title="Turnier" aria-label="Turnier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4M9 20h6M10 17h4"/></svg>Turnier</button>
   <button class="btn" data-act="more" aria-label="Mehr">⋯</button>
 </div>
@@ -494,7 +535,7 @@ function cleanClass(d) {
   const c = {
     id: String(d.id), name: String(d.name || "Klasse"),
     students: Array.isArray(d.students) ? d.students.map(s => ({ id: String(s.id), name: String(s.name || ""), kl: String(s.kl || ""), photo: !!s.photo, sex: s.sex === "m" || s.sex === "w" ? s.sex : "" })) : [],
-    columns: Array.isArray(d.columns) ? d.columns.map(c => ({ id: String(c.id), title: String(c.title || "").replace(/^\d+\.\s*(Ausfrage)/i, "$1"), type: ["check","grade","mit","text"].includes(c.type) ? c.type : "check", date: c.date || "", weight: Number(c.weight) || 1, ...(c.nostar ? { nostar: true } : {}), ...(c.hj ? { hj: String(c.hj) } : {}), ...(c.sport && typeof c.sport === "object" ? { sport: { test: ["fit", "fitd"].includes(c.sport.test) ? c.sport.test : "la", disc: String(c.sport.disc || "") } } : {}), ...(c.scale && typeof c.scale === "object" ? { scale: { max: Number(c.scale.max) || 0, min: Object.fromEntries([1, 2, 3, 4, 5, 6].map(g => [g, c.scale.min?.[g] === "" || c.scale.min?.[g] == null ? "" : Number(c.scale.min[g])])) } } : {}) })) : [],
+    columns: Array.isArray(d.columns) ? d.columns.map(c => ({ id: String(c.id), title: String(c.title || "").replace(/^\d+\.\s*(Ausfrage)/i, "$1"), type: ["check","grade","mit","text"].includes(c.type) ? c.type : "check", date: c.date || "", weight: Number(c.weight) || 1, ...(c.nostar ? { nostar: true } : {}), ...(c.done ? { done: true } : {}), ...(c.hj ? { hj: String(c.hj) } : {}), ...(c.sport && typeof c.sport === "object" ? { sport: { test: ["fit", "fitd"].includes(c.sport.test) ? c.sport.test : "la", disc: String(c.sport.disc || "") } } : {}), ...(c.scale && typeof c.scale === "object" ? { scale: { max: Number(c.scale.max) || 0, min: Object.fromEntries([1, 2, 3, 4, 5, 6].map(g => [g, c.scale.min?.[g] === "" || c.scale.min?.[g] == null ? "" : Number(c.scale.min[g])])) } } : {}) })) : [],
     cells: d.cells && typeof d.cells === "object" ? JSON.parse(JSON.stringify(d.cells)) : {},
     // Tafel/Pult standardmäßig unten (fv markiert, dass diese Voreinstellung schon übernommen wurde)
     seating: (st => (st.fv ? st : Object.assign(st, { flip: true, fv: 1 })))(Object.assign({ rows: 5, cols: 6, seats: {}, flip: true }, d.seating ? JSON.parse(JSON.stringify(d.seating)) : {})),
@@ -502,9 +543,10 @@ function cleanClass(d) {
     mitInit: !!d.mitInit,
     req: d.req && typeof d.req === "object" ? Object.fromEntries(Object.entries(d.req).map(([k, v]) => [k, Math.max(0, Math.min(9, Number(v) || 0))])) : {},
     infoPhotos: Array.isArray(d.infoPhotos) ? d.infoPhotos.map(String) : [],
+    groups: d.groups && Array.isArray(d.groups.list) ? { n: Math.max(2, Math.min(6, Number(d.groups.n) || 2)), list: d.groups.list.map(g => Array.isArray(g) ? g.map(String) : []), absent: Array.isArray(d.groups.absent) ? d.groups.absent.map(String) : [], names: Array.isArray(d.groups.names) ? d.groups.names.map(x => String(x || "")) : [] } : null,
     tour: d.tour && Array.isArray(d.tour.teams) && Array.isArray(d.tour.matches) ? JSON.parse(JSON.stringify(d.tour)) : null,
     events: Array.isArray(d.events) ? d.events.map(e => ({ id: String(e.id || rid()), date: String(e.date || ""), time: String(e.time || ""), type: String(e.type || "sonst"), title: String(e.title || ""), note: String(e.note || ""), end: /^\d{4}-\d{2}-\d{2}$/.test(e.end || "") ? e.end : "" })) : [],
-    sport: !!d.sport, it: !!d.it && !d.sport, jgst: Number(d.jgst) || 0, sex: d.sex === "m" || d.sex === "w" ? d.sex : "",
+    sport: !!d.sport, it: !!d.it && !d.sport, wpf: ["I","II","IIIa","IIIb"].includes(d.wpf) ? d.wpf : "", jgst: Number(d.jgst) || 0, sex: d.sex === "m" || d.sex === "w" ? d.sex : "",
     raw: d.raw && typeof d.raw === "object" ? JSON.parse(JSON.stringify(d.raw)) : {},
     pts: d.pts && typeof d.pts === "object" ? JSON.parse(JSON.stringify(d.pts)) : {},   // Punkte bei Stegreif/Kurzarbeit/Schulaufgabe
     info: d.info && typeof d.info === "object" ? Object.fromEntries(Object.entries(d.info).map(([k, v]) => [k, String(v ?? "")])) : {}
@@ -778,10 +820,49 @@ const subjFromName = name => { const n = String(name || ""); return /sport|\bsp\
 const isMathe = cls => !!cls && subjFromName(cls.name) === "mathe";
 // Anschläge je Abschrift (IT): Jgst → [1. Abschrift, 2. Abschrift]
 const ANSCHLAEGE = { 5: [300, 350], 6: [400, 500], 7: [600, 700], 8: [800, 900], 9: [1000, 1200] };
+// Abschrift: Anschlagszahl nach Jahrgangsstufe und Halbjahr der Spalte (Datum, sonst Halbjahr der Anlage)
 function anschlaege(cls, col) {
-  if (!cls.it || col.type !== "grade") return null;
-  const m = String(col.title).match(/(\d+)\.\s*Abschrift/i); if (!m) return null;
-  return ANSCHLAEGE[jgstFromName(cls.name)]?.[+m[1] - 1] ?? null;
+  if (col.type !== "grade" || !/abschrift/i.test(col.title || "")) return null;
+  const h = +colHalf(col).split("-")[1];
+  return ANSCHLAEGE[jgstFromName(cls.name)]?.[h - 1] ?? null;
+}
+// IT: Modulverteilung der Schule (ab 2024) – je Wahlpflichtfächergruppe: [Jgst, Pflicht?]
+const IT_MOD = [
+  ["1.1","Texterfassung",{I:[5,1],II:[5,1],IIIa:[5,1],IIIb:[5,1]}],
+  ["1.2","Einführung in die Programmierung",{I:[7,1],II:[7,1],IIIa:[8,1],IIIb:[7,1]}],
+  ["1.3","Einführung in die Textverarbeitung",{I:[6,1],II:[6,1],IIIa:[6,1],IIIb:[6,1]}],
+  ["1.4","Informationsaustausch",{I:[7,1],II:[7,1],IIIa:[7,1],IIIb:[7,1]}],
+  ["1.5","Einführung in die Bildbearbeitung",{I:[6,1],II:[6,1],IIIa:[6,1],IIIb:[6,1]}],
+  ["1.6","Einführung in die Tabellenkalkulation",{I:[7,1],II:[7,1],IIIa:[7,1],IIIb:[7,1]}],
+  ["1.7","Informationsbeschaffung und -präsentation",{I:[8,1],II:[8,1],IIIa:[8,1],IIIb:[8,1]}],
+  ["1.8","Grundlagen elektronischer Datenverarbeitung",{I:[7,1],II:[7,1],IIIa:[8,1],IIIb:[7,1]}],
+  ["1.9","Digitale Medien",{I:[5,1],II:[5,1],IIIa:[5,1],IIIb:[5,1]}],
+  ["2.1.1","Textverarbeitung I",{I:[8,1],II:[8,1],IIIa:[8,1],IIIb:[8,1]},1],
+  ["2.1.2","Textverarbeitung II",{I:[9,0],II:[9,0],IIIa:[9,0],IIIb:[9,0]}],
+  ["2.2.1","Tabellenkalkulation I",{I:[8,1],II:[9,1],IIIa:[9,1],IIIb:[8,1]},1],
+  ["2.3.1","Datenbanksysteme I",{I:[9,1],II:[9,1],IIIa:[9,0],IIIb:[9,0]},1],
+  ["2.4.1","Grundlagen des Technischen Zeichnens",{I:[8,1],IIIb:[8,1]},1],
+  ["2.4.2","Grundlagen des Computer Aided Design",{I:[8,1],IIIb:[8,1]},1],
+  ["2.5.1","Datennetze I",{I:[10,1],II:[9,0]},1],
+  ["2.6.1","Modellieren und Codieren von Algorithmen",{I:[10,1],II:[10,1],IIIa:[9,1],IIIb:[9,1]},1],
+  ["2.7.1","Logische Schaltungen",{I:[8,0]}],
+  ["2.7.2","Robotik und eingebettete Systeme",{I:[9,0]}],
+  ["2.7.3","Künstliche Intelligenz",{I:[10,0]}],
+  ["2.8.1","Computergrafik",{I:[9,0],II:[10,0],IIIb:[8,1]}],
+  ["2.8.2","Computeranimation",{I:[10,0],IIIb:[9,1]}],
+];
+const WPF_L = { I: "I", II: "II", IIIa: "III a", IIIb: "III b (Kunst)" };
+const wpfFromName = name => { const m = String(name || "").match(/(?:^|[\s\-\/(])(III\s*[ab]|II|I)(?=$|[\s\-\/)])/i); if (!m) return ""; const v = m[1].replace(/\s/g, ""); return { iiia: "IIIa", iiib: "IIIb", ii: "II", i: "I" }[v.toLowerCase()] || ""; };
+const clsWpf = cls => cls.wpf || wpfFromName(cls.info?.zweig) || wpfFromName(cls.name);
+function itModulesHtml(cls) {
+  const jg = jgstFromName(cls.name), w = clsWpf(cls);
+  if (!jg) return `<p class="hint">Keine Jahrgangsstufe im Klassennamen erkannt.</p>`;
+  if (!w) return `<p class="hint">Wähle die Wahlpflichtfächergruppe, um die Module der ${jg}. Klasse zu sehen.</p>`;
+  const ms = IT_MOD.filter(x => x[2][w]?.[0] === jg);
+  if (!ms.length) return `<p class="hint">In Jgst. ${jg} sind für Gruppe ${WPF_L[w]} keine Module vorgesehen.</p>`;
+  const li = x => `<div class="itmod"><span class="nr">${x[0]}</span><span>${esc(x[1])}${x[3] ? `<sup title="Modul der freiwilligen IT-Abschlussprüfung">1</sup>` : ""}</span></div>`;
+  return `<div class="itgrp"><b>Module</b>${ms.map(li).join("")}</div>
+    ${ms.some(x => x[3]) ? `<p class="hint" style="font-size:12px;margin:4px 0 0"><sup>1</sup> Modul der freiwilligen IT-Abschlussprüfung</p>` : ""}`;
 }
 const jgstFromName = name => { const m = String(name || "").match(/(^|\D)(1[01]|[5-9])(?!\d)/); return m ? +m[2] : 0; };
 const isSport = cls => !!cls?.sport && cls.jgst >= 5 && cls.jgst <= 11;
@@ -875,7 +956,7 @@ function render() {
   if (hasGrades) h += `<th class="c-avg"><div class="colhead"><span class="t">Ø Schnitt</span></div></th>`;
   cls.columns.forEach(c => {
     const wt = c.type === "grade" && c.weight !== 1 ? " · ×" + String(c.weight).replace(".", ",") : "";
-    h += `<th class="c-col t-${c.type}${c.sport ? " c-sp" + (c.sport.test === "fit" ? " c-fit" : "") : ""}"><button class="colhead" data-col="${c.id}"><span class="t">${esc(c.title || "Ohne Titel")}</span>${anschlaege(cls, c) ? `<span class="d" style="color:var(--ink);font-weight:600">${anschlaege(cls, c).toLocaleString("de-DE")} Anschläge</span>` : ""}<span class="d">${c.type === "text" || /mitarbeit-note|fko/i.test(c.title) ? "" : fmtDate(c.date)}${wt}</span>${c.sport ? `<span class="sph"><span>${c.sport.test === "fit" ? "Planks · Sit-Ups · Seil" : "Wert (" + (c.sport.test === "fitd" ? FIT_DISC[c.sport.disc]?.u : LA_DISC[c.sport.disc]?.u) + ")"}</span><span>Note</span></span>` : ""}</button></th>`;
+    h += `<th class="c-col t-${c.type}${c.sport ? " c-sp" + (c.sport.test === "fit" ? " c-fit" : "") : ""}"><button class="colhead" data-col="${c.id}">${c.done && canDone(c) ? `<span class="donechk" title="Notengebung abgeschlossen">✓</span>` : ""}<span class="t">${esc(c.title || "Ohne Titel")}</span>${""}<span class="d">${c.type === "text" || /mitarbeit-note|fko/i.test(c.title) ? "" : fmtDate(c.date)}${wt}</span>${c.sport ? `<span class="sph"><span>${c.sport.test === "fit" ? "Planks · Sit-Ups · Seil" : "Wert (" + (c.sport.test === "fitd" ? FIT_DISC[c.sport.disc]?.u : LA_DISC[c.sport.disc]?.u) + ")"}</span><span>Note</span></span>` : ""}</button></th>`;
   });
   h += `<th class="c-add"><button class="addcol" data-act="addcol" aria-label="Spalte hinzufügen">+</button></th></tr></thead><tbody>`;
   const needMap = Object.fromEntries(cls.columns.filter(isAusfrage).map(c => [c.id, ausfNeeds(cls, c)]));
@@ -919,7 +1000,9 @@ function render() {
       const mx = Math.max(1, ...dist);
       const miss = isAusfrage(c) ? 0 : vals.filter(v => !v || v === "f").length;
       h += `<td><button class="foot footbtn" data-gopen="${c.id}">${miss ? `<span class="lbl" style="color:var(--no);font-weight:700">${miss === 1 ? "1 fehlt" : miss + " fehlen"}</span>` : ""}${isAusfrage(c) ? `<span class="lbl">Ausfrage ›</span>` : `<b>Ø ${nums.length ? fmtNum(nums.reduce((a, b) => a + b, 0) / nums.length) : "–"}</b>`}`;
-      if (nums.length) h += `<div class="dist">${dist.map(n => `<span style="height:${Math.round(n / mx * 100)}%" title="${n}"></span>`).join("")}</div><div class="distl">${dist.map(n => `<span>${n}</span>`).join("")}</div>`;
+      const an = anschlaege(cls, c);
+      if (an) h += `<span class="ansch"><b>${an.toLocaleString("de-DE")}</b> Anschläge · ${colHalf(c).split("-")[1]}. HJ</span>`;
+      else if (nums.length) h += `<div class="dist">${dist.map(n => `<span style="height:${Math.round(n / mx * 100)}%" title="${n}"></span>`).join("")}</div><div class="distl">${dist.map(n => `<span>${n}</span>`).join("")}</div>`;
       h += `</button></td>`;
     } else if (c.type === "check") {
       const ok = vals.filter(v => v === "ok").length, no = vals.filter(v => v === "no").length;
@@ -938,7 +1021,11 @@ function render() {
 
 function renderTabs() {
   const t = $("#tabs");
-  $('[data-act="tour"]')?.classList.toggle("hidden", !(S.active && isSport(S.classes[S.active])));
+  const spc = !!(S.active && isSport(S.classes[S.active]));
+  $('[data-act="tour"]')?.classList.toggle("hidden", !spc);
+  $('[data-act="seats"]')?.classList.toggle("hidden", spc);
+  $('[data-act="groups"]')?.classList.toggle("hidden", !spc);
+  $('[data-act="cam"]')?.classList.toggle("hidden", !spc);
   if (S.active && S.classes[S.active]) document.documentElement.style.setProperty("--tint", ccol(S.active)); else document.documentElement.style.removeProperty("--tint");
   t.innerHTML = S.order.map(id => {
     const c = S.classes[id], a = id === S.active;
@@ -1038,7 +1125,6 @@ function classDialog(cls) {
 }
 
 const INFO_FIELDS = [
-  ["zweig", "Zweig", "z. B. I, II, IIIa"], ["raum", "Feuerplatznummer", "z. B. 12"],
   ["kl", "Klassenleitung", ""],
   ["sprecher", "Klassensprecher/in", ""]
 ];
@@ -1053,6 +1139,7 @@ function infoDialog() {
   const stat = (v, l) => `<div style="background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center"><b style="display:block;font-size:20px">${v}</b><span style="font-size:12px;color:var(--muted)">${l}</span></div>`;
   modal(`<h3>Infos · ${esc(cls.name)}</h3>
     ${isSport(cls) ? `<div class="field"><label>Sport (Bewertungstabellen) · Jgst. ${cls.jgst}</label><div class="seg" id="msx"><button data-v="w" class="${cls.sex === "w" ? "on" : ""}">weiblich</button><button data-v="m" class="${cls.sex === "m" ? "on" : ""}">männlich</button></div></div>` : ""}
+    ${cls.it ? `<div class="field"><label>IT-Module · Jgst. ${jgstFromName(cls.name) || "?"} · Wahlpflichtfächergruppe</label><div class="seg" id="wpf">${Object.entries(WPF_L).map(([k, l]) => `<button data-v="${k}" class="${clsWpf(cls) === k ? "on" : ""}">${l}</button>`).join("")}</div><div id="itmods" style="margin-top:10px">${itModulesHtml(cls)}</div></div>` : ""}
     ${isSport(cls) ? `<div class="field"><label>Bewertungstabellen</label><div class="tabthumbs" id="tabth"></div></div>` : ""}
     ${(() => { const cats = reqCats(cls).filter(c => reqOf(cls, c) > 0); return `<p class="hint" style="margin:-4px 0 12px;font-size:12px">✓ Notenvollständigkeit pro Halbjahr: ${cats.length ? cats.map(c => `${reqOf(cls, c)}× ${c.l}`).join(", ") : "nicht festgelegt (unter ⋯ einstellbar)"}</p>`; })()}
     ${nextEv ? `<p class="hint" style="margin:-4px 0 14px">📅 Nächster Termin: <b>${esc(nextEv.title || EV_TYPES[nextEv.type]?.l)}</b> am ${fmtDate(nextEv.date)}${nextEv.time ? ", " + esc(nextEv.time) : ""}</p>` : ""}
@@ -1063,6 +1150,7 @@ function infoDialog() {
     <div class="field"><label>Fotos</label><div class="iphotos" id="iph"></div></div>
     <div class="actions"><button class="btn" data-x="cancel">Abbrechen</button><button class="btn primary" data-x="ok">Speichern</button></div>`,
     (m, close) => {
+      if ($("#wpf", m)) seg(m, "#wpf", v => { cls.wpf = v; store.save("c_" + cls.id); $("#itmods", m).innerHTML = itModulesHtml(cls); });
       if ($("#msx", m)) seg(m, "#msx", v => { cls.sex = v; drawTabs(); recomputeAllSport(cls); store.save("c_" + cls.id); render(); toast("Sportnoten nach Tabelle " + (v === "w" ? "Mädchen" : "Jungen") + " berechnet"); });
       // nur die Tabellen für das eingestellte Geschlecht (ohne Einstellung: alle)
       const drawTabs = () => { const t = $("#tabth", m); if (t) t.innerHTML = TAB_LIST.filter(x => !cls.sex || x.sex === cls.sex).map(x => `<button class="tabthumb" data-showtab="${x.k}"><img src="${TAB_IMGS[x.k]}" alt=""><span>${x.l}</span></button>`).join(""); };
@@ -1218,6 +1306,7 @@ function columnDialog(col) {
       <p class="hint" style="margin:6px 0 0">★ zählt wie +2.</p></div>
     <div class="field"><label>Titel</label><input class="inp" id="cti" placeholder="z. B. Hausaufgabe S. 34, 1. Schulaufgabe, Unterschrift" value="${esc(col?.title || "")}"></div>
     <div class="field"><label>Datum</label><input class="inp" type="date" id="cd" value="${esc(col ? col.date : todayISO())}"></div>
+    ${!isNew && canDone(col) ? `<label class="check donetgl"><input type="checkbox" id="cdone"${col.done ? " checked" : ""}> <span><b style="color:var(--ok)">✓</b> Notengebung abgeschlossen</span></label>` : ""}
     <div class="field" id="cwf"><label>Gewichtung im Schnitt</label><div class="seg" id="cw">
       ${(isSport(cls) ? [0.33, 0.5, 1, 2, 3] : [0.5, 1, 2, 3]).map(w => `<button data-v="${w}" class="${weight === w ? "on" : ""}">×${String(w).replace(".", ",")}</button>`).join("")}</div>
       <p class="hint" style="margin:6px 0 0">z. B. Schulaufgabe ×2, kleiner Leistungsnachweis ×1</p></div>
@@ -1273,6 +1362,7 @@ function columnDialog(col) {
           if (col.type !== type && col.sport) { delete col.sport; delete cls.raw[col.id]; }
           Object.assign(col, { title, type, date: $("#cd", m).value, weight: type === "grade" ? weight : 1 });
           if (type === "mit" && !star) col.nostar = true; else delete col.nostar;
+          if ($("#cdone", m)?.checked && canDone(col)) col.done = true; else delete col.done;
           close(); store.save("c_" + cls.id); render();
         }
       };
@@ -1837,7 +1927,7 @@ function tourView(cls) {
     const teams = `<div class="tteams">${t.teams.map((x, i) => `<div class="tteamcard" style="--tc:${TEAM_COL[i][1]}"><div class="tteamhead"><i></i><input class="inp" data-tn="${i}" value="${esc(x.name)}"></div>
       ${x.sids.map(sid => cls.students.find(s => s.id === sid)).filter(Boolean).map(s => `<div class="tstu">${avatar(s)}<span>${esc(s.name)}</span></div>`).join("") || `<p class="hint">Keine Schüler zugeteilt</p>`}</div>`).join("")}</div>
       <button class="btn" data-tt="remix" style="margin-top:10px">🔀 Schüler neu verteilen</button>`;
-    const sy = $(".tbody", el)?.scrollTop || 0, prevTab = el.dataset.tab;   // Scrollposition beim Neuzeichnen behalten
+    const sy = $(".tbody", el)?.scrollTop || 0, prevTab = el.dataset.ttab;   // Scrollposition beim Neuzeichnen behalten
     const finBtn = tab !== "plan" ? "" : `<div class="row" style="gap:8px;margin-top:4px">${!t.rr ? `<button class="btn" data-tt="addrr">↩ Rückrunde hinzufügen</button>` : ""}${t.mode !== "two" && !t.matches.some(m => m.kind) ? `<button class="btn" data-tt="addfin">🏆 Finale hinzufügen</button>` : ""}</div>`;
     el.innerHTML = `<div class="clk-head"><div class="seg" id="ttab">${[["plan", "Spielplan"], ["table", "Tabelle"], ["teams", "Mannschaften"]].map(([k, l]) => `<button data-v="${k}" class="${tab === k ? "on" : ""}">${l}</button>`).join("")}</div>
       <div class="row" style="gap:8px"><button class="btn" data-tt="new">Neues Turnier</button><button class="btn primary" data-tt="close">Fertig</button></div></div>
@@ -1845,7 +1935,7 @@ function tourView(cls) {
         if (!fm) return `<p style="font-weight:700;color:var(--ok);margin:0 0 10px">🏆 Alle Spiele gespielt – Sieger: ${esc(t.teams[rows[0].i].name)}</p>`;
         return fm.ga === fm.gb ? `<p style="font-weight:700;color:var(--no);margin:0 0 10px">Finale unentschieden – Entscheidung z. B. durch Siebenmeter, dann das Ergebnis anpassen.</p>`
           : `<p style="font-weight:700;color:var(--ok);margin:0 0 10px">🏆 Turniersieger: ${esc(t.teams[fm.ga > fm.gb ? fm.a : fm.b].name)}</p>`; })() : ""}${tab === "plan" ? plan + finBtn : tab === "table" ? table : teams}</div>`;
-    if (prevTab === tab) $(".tbody", el).scrollTop = sy; el.dataset.tab = tab;
+    if (prevTab === tab) $(".tbody", el).scrollTop = sy; el.dataset.ttab = tab;
     $("#ttab", el).addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (b) { tab = b.dataset.v; draw(); } });
     $("#tsps", el)?.addEventListener("click", e => { const b = e.target.closest("[data-sp]"); if (b) { tsp = b.dataset.sp === "" ? null : +b.dataset.sp; draw(); } });
     el.querySelectorAll("[data-tn]").forEach(inp => inp.addEventListener("change", () => { t.teams[+inp.dataset.tn].name = inp.value.trim() || TEAM_COL[+inp.dataset.tn][0]; save(); }));
@@ -1968,6 +2058,7 @@ function clicker(title, start, done) {
 }
 /* ---------- Mitarbeit-Note: Vorschlag aus + / − ---------- */
 // Leistungsnachweise mit Punkteeingabe
+const canDone = col => col && col.type === "grade" && !col.sport && /stegreif|kurzarbeit|schulaufgabe|abschrift/i.test(col.title || "");   // „Notengebung abgeschlossen“
 const isPtsCol = col => col && col.type === "grade" && !col.sport && /stegreif|kurzarbeit|schulaufgabe/i.test(col.title || "");
 const hasScale = col => !!col?.scale && [1, 2, 3, 4, 5].every(g => col.scale.min?.[g] !== "" && col.scale.min?.[g] != null);
 function ptsGrade(col, pts) {
@@ -2024,12 +2115,15 @@ function gradeList(colId) {
   modal(`<h3>${esc(col.title || "Note")}</h3><p class="hint">${col.date ? fmtDate(col.date) : ""}</p>
     ${swKind(col) ? (() => { const vals = cls.cells[colId] || {}, miss = cls.students.filter(s => !vals[s.id] || vals[s.id] === "f"), part = miss.length && miss.length < cls.students.length;
       return `<button class="btn primary" data-gsw="${part ? miss.map(s => s.id).join(",") : ""}" style="width:100%;min-height:48px;margin-bottom:12px">⏱ Stoppuhr – ${part ? `nur die ${miss.length} fehlenden Schüler messen` : "alle gleichzeitig messen"}</button>`; })() : ""}
+    ${canDone(col) ? `<label class="check donetgl"><input type="checkbox" id="gdone"${col.done ? " checked" : ""}> <span><b style="color:var(--ok)">✓</b> Notengebung abgeschlossen</span></label>` : ""}
     ${isMitNote(col) ? `<div class="field"><label>Vorschlag aus der Mitarbeit</label><div id="msug"></div></div>` : ""}
-    ${col.sport ? "" : `<div class="field${isMitNote(col) || isSport(cls) || isAusfrage(col) ? " hidden" : ""}"><label>Punkteverteilung</label><div id="pscale"></div></div>`}
+    ${/abschrift/i.test(col.title || "") ? `<div class="field"><label>Erforderliche Anschläge</label><p style="margin:2px 0 0;font-size:17px">${anschlaege(cls, col) ? `<b>${anschlaege(cls, col).toLocaleString("de-DE")} Anschläge</b> <span style="color:var(--muted)">· Jgst. ${jgstFromName(cls.name)}, ${colHalf(col).split("-")[1]}. Halbjahr</span>` : `<span style="color:var(--muted)">Keine Angabe – Jahrgangsstufe 5–9 im Klassennamen nötig.</span>`}</p></div><div id="pscale" class="hidden"></div>`
+      : col.sport ? "" : `<div class="field${isMitNote(col) || isSport(cls) || isAusfrage(col) ? " hidden" : ""}"><label>Punkteverteilung</label><div id="pscale"></div></div>`}
     ${col.sport ? "" : `<div class="field${isAusfrage(col) ? " hidden" : ""}"><label>Noten eintragen</label><button class="btn" data-gpaste>📋 Noten aus Liste einfügen</button></div>`}
     <div id="glist" style="margin-top:18px"></div>
     <div class="actions"><button class="btn primary" data-x="close">Fertig</button></div>`,
     (m, close) => {
+      $("#gdone", m)?.addEventListener("change", e => { if (e.target.checked) col.done = true; else delete col.done; store.save("c_" + cls.id); render(); });
       m.querySelector("[data-gsw]")?.addEventListener("click", e => { const ids = e.currentTarget.dataset.gsw; close(); stopwatch(colId, ids ? ids.split(",") : null); });
       const draw = () => {
         const vals = cls.cells[colId] || {};
@@ -2260,6 +2354,8 @@ document.addEventListener("click", e => {
     if (act === "addcol") return columnDialog(null);
     if (act === "seats") return openSeats();
     if (act === "tour") return openTour();
+    if (act === "groups") return openGroups();
+    if (act === "cam") return openCam();
     if (act === "cal") return openCal();
     if (act === "more") return moreDialog();
   }
@@ -2521,11 +2617,28 @@ function renderSeats() {
   const bar = $("#seatAction");
   if (seatSel) {
     const s = smap.get(seatSel.sid);
-    bar.innerHTML = `<span class="msg"><b>${esc(s?.name || "")}</b> – ${seatSel.from === "pool" ? "tippe einen Platz" : "tippe einen anderen Platz zum Verschieben oder Tauschen"}</span>
+    const nc = noteCol(cls), nv = nc ? (cls.cells[nc.id]?.[seatSel.sid] || "") : "";
+    bar.innerHTML = `<span class="msg"><b>${esc(s?.name || "")}</b> – ${seatSel.from === "pool" ? "tippe einen Platz" : "Platz tippen zum Tauschen"}</span>
+      <input class="inp snote" id="seatNote" value="${esc(nv)}" placeholder="Notiz …" autocomplete="off" enterkeyhint="done">
       <button class="btn" data-s="photo">📷 Foto</button>${seatSel.from !== "pool" ? `<button class="btn" data-s="unseat">Platz räumen</button>` : ""}<button class="btn" data-s="cancel">Abbrechen</button>`;
     bar.classList.remove("hidden");
   } else bar.classList.add("hidden");
 }
+// Notizen-Spalte: erste Text-Spalte namens „Notizen“ (wird bei Bedarf angelegt)
+function noteCol(cls, create) {
+  let c = cls.columns.find(x => x.type === "text" && /^notiz(en)?$/i.test((x.title || "").trim()));
+  if (!c && create) { c = { id: rid(), title: "Notizen", type: "text", date: "", weight: 1 }; cls.columns.push(c); }
+  return c;
+}
+seatsEl.addEventListener("input", e => {
+  if (e.target.id !== "seatNote" || !seatSel) return;
+  const cls = cur(); if (!cls) return;
+  const v = e.target.value.trim(), c = noteCol(cls, !!v); if (!c) return;
+  cls.cells[c.id] = cls.cells[c.id] || {};
+  if (v) cls.cells[c.id][seatSel.sid] = v; else delete cls.cells[c.id][seatSel.sid];
+  store.save("c_" + cls.id);
+});
+seatsEl.addEventListener("keydown", e => { if (e.target.id === "seatNote" && e.key === "Enter") e.target.blur(); });
 seatsEl.addEventListener("click", async e => {
   const cls = cur(); if (!cls) return; const st = cls.seating;
   const save = () => { store.save("c_" + cls.id); renderSeats(); };
@@ -2753,6 +2866,153 @@ window.addEventListener("beforeunload", flushNow);
   booted = true;
   render();
 })();
+
+/* ---------- Sport: Gruppen zufällig einteilen ---------- */
+function mixGroups(cls, n, absent) {
+  const shuf = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const key = s => (s.sex || "") + "|" + (s.kl || "");   // Jungen/Mädchen und Stammklassen gleichmäßig streuen
+  const strata = {}; cls.students.filter(s => !absent.has(s.id)).forEach(s => (strata[key(s)] ||= []).push(s));
+  const list = Array.from({ length: n }, () => []), cnt = Array.from({ length: n }, () => ({}));
+  shuf(Object.keys(strata)).forEach(k => shuf(strata[k]).forEach(s => {
+    const min = Math.min(...list.map(g => g.length));
+    let cand = list.map((g, i) => i).filter(i => list[i].length === min);
+    const m2 = Math.min(...cand.map(i => cnt[i][k] || 0)); cand = cand.filter(i => (cnt[i][k] || 0) === m2);
+    const gi = cand[Math.floor(Math.random() * cand.length)]; list[gi].push(s.id); cnt[gi][k] = (cnt[gi][k] || 0) + 1;
+  }));
+  return list;
+}
+function openGroups() {
+  const cls = cur(); if (!cls) return;
+  if (activeCell) { activeCell = null; $("#pad").classList.add("hidden"); }
+  ensurePhotos(cls);
+  let g = cls.groups, sel = null;
+  const absent = new Set(g?.absent || []);
+  const save = () => { cls.groups = g; store.save("c_" + cls.id); };
+  const mix = n => { g = { n, absent: [...absent], list: mixGroups(cls, n, absent), names: g?.names || [] }; sel = null; save(); };
+  const gname = i => g.names?.[i] || TEAM_COL[i][0];
+  // Liste an die aktuelle Klasse anpassen (gelöschte raus, neue Schüler in die kleinste Gruppe)
+  const sync = () => { const ids = new Set(cls.students.map(s => s.id));
+    g.list = g.list.map(x => x.filter(id => ids.has(id) && !absent.has(id)));
+    cls.students.forEach(s => { if (!absent.has(s.id) && !g.list.some(x => x.includes(s.id))) smallest().push(s.id); }); };
+  const smallest = () => g.list.reduce((a, x) => x.length < a.length ? x : a, g.list[0]);
+  if (!g || g.list.length !== g.n) mix(g?.n || 2); else sync();
+  const el = document.createElement("div"); el.className = "clk grp"; document.body.appendChild(el);
+  const byId = id => cls.students.find(s => s.id === id);
+  const draw = () => {
+    const sy = $(".gbody", el)?.scrollTop || 0;
+    const pres = cls.students.length - absent.size;
+    el.innerHTML = `<div class="clk-head"><div class="row" style="gap:10px;align-items:center"><b style="font-size:17px">Gruppen</b><div class="seg" id="gn">${[2, 3, 4, 5, 6].map(x => `<button data-v="${x}" class="${x === g.n ? "on" : ""}">${x}</button>`).join("")}</div></div>
+      <div class="row" style="gap:8px"><button class="btn" data-g="mix">🔀 Neu mischen</button><button class="btn primary" data-g="close">Fertig</button></div></div>
+      <div class="gbody">
+        <p class="hint" style="margin:0 0 10px">${pres} anwesend${absent.size ? ` · ${absent.size} fehlen` : ""} · ${sel ? "<b>Jetzt die Gruppe antippen, in die der Schüler wechseln soll.</b>" : "Gruppennamen antippen zum Umbenennen · zum Tauschen einen Schüler antippen, dann die Zielgruppe."}</p>
+        <div class="ggrid">${g.list.map((x, i) => `<div class="gcard${sel && !x.includes(sel) ? " tgt" : ""}" data-gi="${i}" style="--tc:${TEAM_COL[i][1]}">
+          <div class="ghead"><i></i><input class="gname" data-gn="${i}" value="${esc(gname(i))}" aria-label="Gruppenname"><small>${x.length}</small></div>
+          ${x.map(byId).filter(Boolean).map(s => `<div class="gstu${sel === s.id ? " sel" : ""}" data-gs="${s.id}">${avatar(s)}<span>${esc(s.name)}</span>${s.kl ? `<span class="gkl">${esc(s.kl)}</span>` : ""}</div>`).join("") || `<p class="hint">leer</p>`}</div>`).join("")}</div>
+        <div class="gabs"><label class="hint" style="display:block;margin-bottom:6px;font-weight:700">Wer fehlt? (antippen)</label><div class="row">${cls.students.map(s => `<button class="gchip${absent.has(s.id) ? " off" : ""}" data-ga="${s.id}">${esc(s.name)}</button>`).join("")}</div></div>
+      </div>`;
+    $(".gbody", el).scrollTop = sy;
+    el.querySelectorAll("[data-gn]").forEach(inp => {
+      inp.addEventListener("change", () => { const i = +inp.dataset.gn; g.names = g.names || []; g.names[i] = inp.value.trim() === TEAM_COL[i][0] ? "" : inp.value.trim(); inp.value = gname(i); save(); });
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") inp.blur(); });
+    });
+  };
+  el.addEventListener("click", e => {
+    const nb = e.target.closest("#gn [data-v]"); if (nb) { mix(+nb.dataset.v); draw(); return; }
+    const k = e.target.closest("[data-g]")?.dataset.g;
+    if (k === "close") { el.remove(); return; }
+    if (k === "mix") { mix(g.n); draw(); toast("Neu gemischt"); return; }
+    const a = e.target.closest("[data-ga]");
+    if (a) { const id = a.dataset.ga;
+      if (absent.has(id)) { absent.delete(id); smallest().push(id); } else { absent.add(id); g.list = g.list.map(x => x.filter(y => y !== id)); if (sel === id) sel = null; }
+      g.absent = [...absent]; save(); draw(); return; }
+    const st = e.target.closest("[data-gs]");
+    if (st) { sel = sel === st.dataset.gs ? null : st.dataset.gs; draw(); return; }
+    if (e.target.closest("[data-gn]") && !sel) return;
+    const card = e.target.closest("[data-gi]");
+    if (card && sel) { const gi = +card.dataset.gi; if (!g.list[gi].includes(sel)) { g.list = g.list.map(x => x.filter(y => y !== sel)); g.list[gi].push(sel); save(); } sel = null; draw(); }
+  });
+  draw();
+}
+
+/* ---------- Sport: Kamera mit Zeitverzögerung (Bilder bleiben nur im Arbeitsspeicher) ---------- */
+function openCam() {
+  if (activeCell) { activeCell = null; $("#pad").classList.add("hidden"); }
+  let delay = lsGet("ko_camdelay") || 6, facing = lsGet("ko_camfacing") || "environment", paused = false, stream = null, alive = true, wake = null;
+  const FPS = 20, MAXW = 1280;
+  let buf = [], busy = false, decoding = false, shown = null, capT = null, raf = 0;
+  const el = document.createElement("div"); el.className = "clk cam"; document.body.appendChild(el);
+  let fit = !!lsGet("ko_camfit");
+  el.innerHTML = `<div class="camstage${fit ? " fit" : ""}"><canvas id="cv"></canvas><div class="cammsg" id="cm"></div><div class="cambar" id="cbar" style="width:0"></div></div>
+    <div class="camui"><div class="row" style="gap:8px;align-items:center"><span class="camlbl">Verzögerung</span><div class="seg" id="cd">${[4, 5, 6, 7, 8, 9, 10].map(x => `<button data-v="${x}" class="${x === delay ? "on" : ""}">${x} s</button>`).join("")}</div></div>
+    <div class="row" style="gap:6px"><button class="btn" data-c="pause">⏸ Standbild</button><button class="btn" data-c="fit">${fit ? "⤢ Füllen" : "▭ Ganzes Bild"}</button><button class="btn" data-c="flip">🔄 Kamera</button><button class="btn" data-c="close">✕ Fertig</button></div></div>
+    <div class="cambadge hidden" id="cb"><i></i><span></span></div>`;
+  // Bedienelemente nach ein paar Sekunden fast ausblenden, bei Berührung wieder zeigen
+  let idleT = null; const wakeUi = () => { el.classList.remove("idle"); clearTimeout(idleT); idleT = setTimeout(() => el.classList.add("idle"), 3000); };
+  el.addEventListener("pointerdown", wakeUi); wakeUi();
+  const cv = $("#cv", el), ctx = cv.getContext("2d"), msg = $("#cm", el), badge = $("#cb", el), bar = $("#cbar", el);
+  const video = document.createElement("video"); video.muted = true; video.playsInline = true; video.setAttribute("playsinline", ""); video.autoplay = true;
+  const cap = document.createElement("canvas"), cctx = cap.getContext("2d");
+  const setMsg = (html) => { msg.innerHTML = html; msg.classList.toggle("hidden", !html); };
+  const stop = () => { stream?.getTracks().forEach(t => t.stop()); stream = null; clearInterval(capT); capT = null; };
+  const start = async () => {
+    stop(); buf = []; shown = null; ctx.clearRect(0, 0, cv.width, cv.height); badge.classList.add("hidden");
+    if (!navigator.mediaDevices?.getUserMedia) { setMsg(`Keine Kamera verfügbar.<p>Dieses Gerät oder diese Ansicht erlaubt keinen Kamerazugriff. Öffne den Organizer als Web-App vom Home-Bildschirm.</p>`); return; }
+    setMsg("Kamera wird gestartet …");
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, aspectRatio: { ideal: innerWidth / innerHeight }, frameRate: { ideal: 30 } } });
+    } catch (err) {
+      const den = err && (err.name === "NotAllowedError" || err.name === "SecurityError");
+      setMsg(den ? `Kamerazugriff nicht erlaubt.<p>Bitte den Zugriff erlauben (iPad: Einstellungen → Apps → Safari → Kamera → „Erlauben“). In der Online-Version innerhalb von Claude kann die Kamera grundsätzlich gesperrt sein – dann die Web-App vom Home-Bildschirm verwenden.</p><button class="btn primary" data-c="retry">Erneut versuchen</button>`
+        : `Kamera konnte nicht gestartet werden.<p>${esc(err?.message || err)}</p><button class="btn primary" data-c="retry">Erneut versuchen</button>`);
+      return;
+    }
+    if (!alive) { stop(); return; }
+    video.srcObject = stream; try { await video.play(); } catch {}
+    cv.classList.toggle("mir", facing === "user");   // Frontkamera spiegeln wie ein Spiegel
+    capT = setInterval(grab, 1000 / FPS);
+  };
+  const grab = () => {
+    if (busy || video.readyState < 2 || !video.videoWidth) return;
+    const sc = Math.min(1, MAXW / video.videoWidth), w = Math.round(video.videoWidth * sc), hh = Math.round(video.videoHeight * sc);
+    if (cap.width !== w || cap.height !== hh) { cap.width = w; cap.height = hh; }
+    cctx.drawImage(video, 0, 0, w, hh); busy = true; const t = performance.now();
+    cap.toBlob(b => { busy = false; if (!b || !alive) return; buf.push({ t, b });
+      const keep = performance.now() - 10500; while (buf.length && buf[0].t < keep) buf.shift(); }, "image/jpeg", 0.72);
+  };
+  const loop = () => {
+    if (!alive) return; raf = requestAnimationFrame(loop);
+    if (!stream) return;
+    const now = performance.now(), target = now - delay * 1000;
+    if (!buf.length || buf[0].t > target) {   // Puffer füllt sich noch
+      const have = buf.length ? (now - buf[0].t) / 1000 : 0, left = Math.max(0, Math.ceil(delay - have));
+      if (!paused) { setMsg(`<div class="big">${left}</div>Aufnahme läuft – Wiedergabe startet gleich<p>Jetzt die Übung machen. Das Bild erscheint ${delay} Sekunden später.</p>`); badge.classList.add("hidden"); }
+      bar.style.width = Math.min(100, have / delay * 100) + "%"; return;
+    }
+    bar.style.width = "0"; if (paused) return;
+    let f = null; for (let i = buf.length - 1; i >= 0; i--) if (buf[i].t <= target) { f = buf[i]; break; }
+    if (!f || f === shown || decoding) return;
+    decoding = true; const fr = f;
+    const done = img => { if (alive && !paused) { if (cv.width !== img.width || cv.height !== img.height) { cv.width = img.width; cv.height = img.height; } ctx.drawImage(img, 0, 0); shown = fr; setMsg(""); badge.classList.remove("hidden", "pz"); $("span", badge).textContent = `− ${delay} s`; } img.close?.(); decoding = false; };
+    if (window.createImageBitmap) createImageBitmap(fr.b).then(done, () => decoding = false);
+    else { const u = URL.createObjectURL(fr.b), im = new Image(); im.onload = () => { done(im); URL.revokeObjectURL(u); }; im.onerror = () => { decoding = false; URL.revokeObjectURL(u); }; im.src = u; }
+  };
+  const close = () => { alive = false; clearTimeout(idleT); cancelAnimationFrame(raf); stop(); buf = []; try { wake?.release(); } catch {} document.removeEventListener("visibilitychange", vis); el.remove(); };
+  const lock = async () => { try { wake = await navigator.wakeLock?.request("screen"); } catch {} };
+  const vis = () => { if (document.visibilityState === "visible" && alive) lock(); };
+  document.addEventListener("visibilitychange", vis);
+  el.addEventListener("click", e => {
+    const d = e.target.closest("#cd [data-v]");
+    if (d) { delay = +d.dataset.v; lsSet("ko_camdelay", delay); el.querySelectorAll("#cd button").forEach(b => b.classList.toggle("on", b === d)); paused = false; $('[data-c="pause"]', el).textContent = "⏸ Standbild"; return; }
+    const k = e.target.closest("[data-c]")?.dataset.c;
+    if (k === "close") return close();
+    if (k === "retry") return start();
+    if (k === "fit") { fit = !fit; lsSet("ko_camfit", fit); $(".camstage", el).classList.toggle("fit", fit); e.target.closest("[data-c]").textContent = fit ? "⤢ Füllen" : "▭ Ganzes Bild"; return; }
+    if (k === "flip") { facing = facing === "user" ? "environment" : "user"; lsSet("ko_camfacing", facing); paused = false; $('[data-c="pause"]', el).textContent = "⏸ Standbild"; return start(); }
+    if (k === "pause") { if (!shown) return; paused = !paused; e.target.closest("[data-c]").textContent = paused ? "▶ Weiter" : "⏸ Standbild";
+      badge.classList.toggle("pz", paused); $("span", badge).textContent = paused ? "Standbild" : `− ${delay} s`; }
+  });
+  lock(); start(); loop();
+}
 </script>
 <script>
 // Web-App: Offline-Speicher registrieren (nur über https/http, nicht als lokale Datei)
