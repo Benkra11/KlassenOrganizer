@@ -2944,7 +2944,7 @@ function openGroups() {
   const cls = cur(); if (!cls) return;
   if (activeCell) { activeCell = null; $("#pad").classList.add("hidden"); }
   ensurePhotos(cls);
-  let g = cls.groups, sel = null;
+  let g = cls.groups, sel = null, showAbs = false;
   const absent = new Set(g?.absent || []);
   const save = () => { cls.groups = g; store.save("c_" + cls.id); };
   const mix = n => { g = { n, absent: [...absent], list: mixGroups(cls, n, absent), names: g?.names || [] }; sel = null; save(); };
@@ -2963,11 +2963,12 @@ function openGroups() {
     el.innerHTML = `<div class="clk-head"><div class="row" style="gap:10px;align-items:center"><b style="font-size:17px">Gruppen</b><div class="seg" id="gn">${[2, 3, 4, 5, 6].map(x => `<button data-v="${x}" class="${x === g.n ? "on" : ""}">${x}</button>`).join("")}</div></div>
       <div class="row" style="gap:8px"><button class="btn" data-g="mix">🔀 Neu mischen</button><button class="btn primary" data-g="close">Fertig</button></div></div>
       <div class="gbody">
-        <p class="hint" style="margin:0 0 10px">${pres} anwesend${absent.size ? ` · ${absent.size} fehlen` : ""} · ${sel ? "<b>Jetzt die Gruppe antippen, in die der Schüler wechseln soll.</b>" : "Gruppennamen antippen zum Umbenennen · zum Tauschen einen Schüler antippen, dann die Zielgruppe."}</p>
+        <p class="hint" style="margin:0 0 10px">${pres} anwesend${absent.size ? ` · ${absent.size} ${absent.size === 1 ? "fehlt" : "fehlen"}` : ""} · ${sel ? "<b>Jetzt die Gruppe antippen, in die der Schüler wechseln soll.</b>" : "Gruppennamen antippen zum Umbenennen · zum Tauschen einen Schüler antippen, dann die Zielgruppe."}</p>
         <div class="ggrid">${g.list.map((x, i) => `<div class="gcard${sel && !x.includes(sel) ? " tgt" : ""}" data-gi="${i}" style="--tc:${TEAM_COL[i][1]}">
           <div class="ghead"><i></i><input class="gname" data-gn="${i}" value="${esc(gname(i))}" aria-label="Gruppenname"><small>${x.length}</small></div>
           ${x.map(byId).filter(Boolean).map(s => `<div class="gstu${sel === s.id ? " sel" : ""}" data-gs="${s.id}">${avatar(s)}<span>${esc(s.name)}</span>${s.kl ? `<span class="gkl">${esc(s.kl)}</span>` : ""}</div>`).join("") || `<p class="hint">leer</p>`}</div>`).join("")}</div>
-        <div class="gabs"><label class="hint" style="display:block;margin-bottom:6px;font-weight:700">Wer fehlt? (antippen)</label><div class="row">${cls.students.map(s => `<button class="gchip${absent.has(s.id) ? " off" : ""}" data-ga="${s.id}">${esc(s.name)}</button>`).join("")}</div></div>
+        <div class="gabs"><button class="btn" data-g="abs">${showAbs ? "▴" : "▾"} Wer fehlt?${absent.size ? ` <span class="hint" style="margin-left:4px">(${absent.size} ${absent.size === 1 ? "fehlt" : "fehlen"}: ${[...absent].map(byId).filter(Boolean).map(s => esc(s.name)).join(", ")})</span>` : ""}</button>
+          ${showAbs ? `<p class="hint" style="margin:8px 0 6px">Fehlende Schüler antippen:</p><div class="row">${cls.students.map(s => `<button class="gchip${absent.has(s.id) ? " off" : ""}" data-ga="${s.id}">${esc(s.name)}</button>`).join("")}</div>` : ""}</div>
       </div>`;
     $(".gbody", el).scrollTop = sy;
     el.querySelectorAll("[data-gn]").forEach(inp => {
@@ -2980,6 +2981,7 @@ function openGroups() {
     const k = e.target.closest("[data-g]")?.dataset.g;
     if (k === "close") { el.remove(); return; }
     if (k === "mix") { mix(g.n); draw(); toast("Neu gemischt"); return; }
+    if (k === "abs") { showAbs = !showAbs; draw(); if (showAbs) $(".gabs", el)?.scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
     const a = e.target.closest("[data-ga]");
     if (a) { const id = a.dataset.ga;
       if (absent.has(id)) { absent.delete(id); smallest().push(id); } else { absent.add(id); g.list = g.list.map(x => x.filter(y => y !== id)); if (sel === id) sel = null; }
