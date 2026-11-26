@@ -1,6 +1,6 @@
 // Klassen-Organizer – Offline-Speicher
 // Bei einer neuen Version die Nummer erhöhen, damit die App aktualisiert wird.
-const CACHE = "klassen-organizer-v23";
+const CACHE = "klassen-organizer-v24";
 const FILES = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon-180.png", "./icons/icon-192.png", "./icons/icon-512.png"];
 
 self.addEventListener("install", e => {
