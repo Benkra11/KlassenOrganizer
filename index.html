@@ -2644,6 +2644,11 @@ window.addEventListener("resize", () => { if (activeCell) positionPad(); });
 
 /* ---------- main interactions ---------- */
 document.addEventListener("click", e => {
+  // Offenes Notenfenster: Tippen in die Tabelle außerhalb der aktuellen Spalte schließt es nur
+  if (activeCell && !$("#pad").classList.contains("hidden") && e.target.closest("#main") && !e.target.closest("#pad")) {
+    const cl = e.target.closest(".cell[data-c]");
+    if (!cl || cl.dataset.c !== activeCell.c) { closePad(); return; }
+  }
   const act = e.target.closest("[data-act]")?.dataset.act;
   if (act) {
     if (act === "newclass") return classDialog(null);
