@@ -420,7 +420,7 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
 .itgrp>b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
 .itmod{display:flex;gap:10px;width:100%;padding:6px 4px;margin:0 -4px;font:inherit;font-size:16px;color:var(--ink);background:none;border:0;border-radius:8px;text-align:left;cursor:pointer} .itmod:hover,.itmod:active{background:var(--paper)} .itmod .go{margin-left:auto;color:var(--muted)}
 .itmod .hrs{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap;padding-left:8px} .itmod .hrs+.go{margin-left:6px}
-.plnbtn{width:100%;justify-content:space-between;margin-top:8px} .plnbtn span{font-weight:500;color:var(--muted);font-size:13px}
+.planbtn{position:relative} .planbadge{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:var(--no);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 4px}
 .plnbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden} .plnbar i{display:block;height:100%;background:var(--ok);border-radius:99px}
 .plnd{width:auto!important;min-height:34px!important;padding:4px 8px!important;font-size:14px!important}
 .plnlist{max-height:56vh;overflow:auto;margin:0 -4px;padding:0 4px}
@@ -476,6 +476,7 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
   <h1 id="clsName" class="hidden"></h1>
   <span class="meta hidden" id="clsMeta"></span>
   <button class="btn undobtn hidden" data-act="undo" title="Rückgängig" aria-label="Rückgängig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
+  <button class="btn planbtn hidden" data-act="plan" title="Stoffplan" aria-label="Stoffplan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.2 1.2L7 4.8M3.5 12l1.2 1.2L7 10.8M3.5 18l1.2 1.2L7 16.8"/></svg>Stoffplan<span class="planbadge hidden"></span></button>
   <button class="btn" data-act="info" title="Infos" aria-label="Infos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>Infos</button>
   <button class="btn calbtn" data-act="cal" title="Kalender" aria-label="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
   <button class="btn primary" data-act="seats" title="Sitzplan" aria-label="Sitzplan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="6" rx="1.5"/><rect x="14" y="3" width="7" height="6" rx="1.5"/><rect x="3" y="14" width="7" height="6" rx="1.5"/><rect x="14" y="14" width="7" height="6" rx="1.5"/></svg>Sitzplan</button>
@@ -948,8 +949,7 @@ function mathLbHtml(cls) {
   if (!lbs.length) return `<p class="hint">Für diese Jahrgangsstufe ist kein Lehrplan hinterlegt.</p>`;
   const sum = lbs.reduce((a, x) => a + (parseInt(x.h.replace(/\D/g, "")) || 0), 0);
   return `<div class="itgrp"><b>Lernbereiche</b>${lbs.map(x => `<button class="itmod" data-mlb="${x.n}"><span class="nr">${x.n}</span><span>${esc(x.t)}</span><span class="hrs">${esc(x.h)}</span><span class="go">›</span></button>`).join("")}
-    <div class="itsum">zusammen ca. ${sum} Std.</div></div>
-    ${(st => `<button class="btn plnbtn" data-plan>📋 Stoffplan abhaken<span>${st.done}/${st.all} erledigt${st.late ? ` · <b style="color:var(--no)">${st.late} im Rückstand</b>` : ""}</span></button>`)(planStats(cls))}`;
+    <div class="itsum">zusammen ca. ${sum} Std.</div></div>`;
 }
 function mathLpDialog(cls, n) {
   const k = mathKey(cls), lb = (mathLp()[k] || []).find(x => x.n === +n); if (!lb) return;
@@ -980,6 +980,7 @@ function planDefaults(cls) {
 }
 // Kapitel und Themen mit geschätzten Enddaten (proportional zu Lehrplan-Stunden bzw. Seitenzahl)
 function planModel(cls) {
+  if (cls.it) return planModelIT(cls);
   const k = mathKey(cls); if (!k) return null;
   const lbs = mathLp()[k] || [], hrs = n => parseInt((lbs.find(x => x.n === n)?.h || "").replace(/\D/g, "")) || 10;
   const bk = WM_BOOKS[k];
@@ -997,6 +998,16 @@ function planModel(cls) {
   });
   return { src: bk ? bk.src : `LehrplanPLUS Mathematik ${k.replace(/(\d+)(I|II)$/, "$1 ($2)")} – Lernbereiche`, book: !!bk, chs, start: pl.start || df.start, end: pl.end || df.end };
 }
+function planModelIT(cls) {
+  const jg = jgstFromName(cls.name), w = clsWpf(cls); if (!jg || !w) return null;
+  const ms = IT_MOD.filter(x => x[2][w]?.[0] === jg); if (!ms.length) return null;
+  const chs = ms.map(x => { const d = IT_LP[x[0]]; return { t: `${x[0]} ${x[1]}`, h: parseInt((d?.h || "").replace(/\D/g, "")) || 14, items: (d?.n?.length ? d.n : ["Modul abgeschlossen"]).map(t => ({ t })) }; });
+  const pl = cls.plan || {}, df = planDefaults(cls), s0 = new Date(pl.start || df.start).getTime(), s1 = new Date(pl.end || df.end).getTime();
+  const H = chs.reduce((a, c) => a + c.h, 0) || 1; let cum = 0;
+  chs.forEach((c, ci) => { const a = s0 + (s1 - s0) * cum / H; cum += c.h; const b = s0 + (s1 - s0) * cum / H; c.endAuto = dISO(b);
+    c.items.forEach((x, j) => { x.auto = dISO(a + (b - a) * (j + 1) / c.items.length); x.id = ci + "." + j; x.date = pl.dates?.[x.id] || x.auto; x.own = !!pl.dates?.[x.id]; x.done = pl.done?.[x.id] || ""; }); });
+  return { src: `IT-Module · Jgst. ${jg} · Wahlpflichtfächergruppe ${WPF_L[w]} – Inhalte laut LehrplanPLUS`, book: true, chs, start: pl.start || df.start, end: pl.end || df.end };
+}
 function planStats(cls) {
   const m = planModel(cls); if (!m) return null; const today = todayISO();
   const all = m.chs.flatMap(c => c.items.filter(x => !x.sub)), done = all.filter(x => x.done).length, late = all.filter(x => !x.done && x.date < today).length;
@@ -1007,7 +1018,7 @@ function planDialog(cls) {
   modal(`<h3>Stoffplan · ${esc(cls.name)}</h3><div id="pln"></div>
     <div class="actions"><button class="btn primary" data-x="ok">Fertig</button></div>`, (m, close) => {
     const draw = () => {
-      const st = planStats(cls); if (!st) { $("#pln", m).innerHTML = `<p class="hint">Wähle unter Infos zuerst die Wahlpflichtfächergruppe.</p>`; return; }
+      const st = planStats(cls); if (!st) { $("#pln", m).innerHTML = `<p class="hint">${jgstFromName(cls.name) ? "Wähle unter Infos zuerst die Wahlpflichtfächergruppe." : "Im Klassennamen wurde keine Jahrgangsstufe erkannt."}</p>`; return; }
       const { m: md, all, done, late } = st, today = todayISO(), sy = m.querySelector(".plnlist")?.scrollTop || 0;
       $("#pln", m).innerHTML = `<p class="hint" style="margin:-6px 0 8px">${esc(md.src)}${md.book ? "" : " · für diese Klasse ist noch keine Arbeitsheft-Gliederung hinterlegt"}</p>
         <div class="plnbar"><i style="width:${all ? Math.round(done / all * 100) : 0}%"></i></div>
@@ -1024,6 +1035,7 @@ function planDialog(cls) {
       const ck = e.target.closest("[data-pck]");
       if (ck) { const id = ck.dataset.pck; cls.plan.done = cls.plan.done || {}; if (cls.plan.done[id]) delete cls.plan.done[id]; else cls.plan.done[id] = todayISO(); save(); draw(); return; }
       if (e.target.closest("[data-x]")) { close(); render(); }
+      return;
     });
     m.addEventListener("change", e => {
       const dt = e.target.closest("[data-pdt]");
@@ -1214,6 +1226,10 @@ function renderTabs() {
   $('[data-act="seats"]')?.classList.toggle("hidden", spc);
   $('[data-act="groups"]')?.classList.toggle("hidden", !spc);
   $('[data-act="cam"]')?.classList.toggle("hidden", !spc);
+  { const c = S.active && S.classes[S.active], pb = $('[data-act="plan"]'), on = !!c && (isMathe(c) || c.it);
+    pb?.classList.toggle("hidden", !on);
+    const st = on ? planStats(c) : null, bd = pb?.querySelector(".planbadge");
+    if (bd) { bd.classList.toggle("hidden", !st?.late); bd.textContent = st?.late || ""; } }
   if (S.active && S.classes[S.active]) document.documentElement.style.setProperty("--tint", ccol(S.active)); else document.documentElement.style.removeProperty("--tint");
   t.innerHTML = S.order.map(id => {
     const c = S.classes[id], a = id === S.active;
@@ -1341,7 +1357,7 @@ function infoDialog() {
     <div class="actions"><button class="btn" data-x="cancel">Abbrechen</button><button class="btn primary" data-x="ok">Speichern</button></div>`,
     (m, close) => {
       m.addEventListener("click", e => { const b = e.target.closest("[data-itmod]"); if (b) itLpDialog(b.dataset.itmod); });
-      m.addEventListener("click", e => { const b = e.target.closest("[data-mlb]"); if (b) mathLpDialog(cls, b.dataset.mlb); if (e.target.closest("[data-plan]")) planDialog(cls); });
+      m.addEventListener("click", e => { const b = e.target.closest("[data-mlb]"); if (b) mathLpDialog(cls, b.dataset.mlb); });
       if ($("#wpf", m)) seg(m, "#wpf", v => { cls.wpf = v; store.save("c_" + cls.id); if ($("#itmods", m)) $("#itmods", m).innerHTML = itModulesHtml(cls); if ($("#mlbs", m)) $("#mlbs", m).innerHTML = mathLbHtml(cls); });
       if ($("#msx", m)) seg(m, "#msx", v => { cls.sex = v; drawTabs(); recomputeAllSport(cls); store.save("c_" + cls.id); render(); toast("Sportnoten nach Tabelle " + (v === "w" ? "Mädchen" : "Jungen") + " berechnet"); });
       // nur die Tabellen für das eingestellte Geschlecht (ohne Einstellung: alle)
@@ -2657,6 +2673,7 @@ document.addEventListener("click", e => {
     if (act === "addstu") return addStudentDialog();
     if (act === "voll") return checkComplete();
     if (act === "undo") return doUndo();
+    if (act === "plan") return planDialog(cur());
     if (act === "info") return infoDialog();
     if (act === "addcol") return columnDialog(null);
     if (act === "seats") return openSeats();
