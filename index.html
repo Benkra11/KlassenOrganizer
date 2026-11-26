@@ -420,6 +420,17 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
 .itgrp>b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
 .itmod{display:flex;gap:10px;width:100%;padding:6px 4px;margin:0 -4px;font:inherit;font-size:16px;color:var(--ink);background:none;border:0;border-radius:8px;text-align:left;cursor:pointer} .itmod:hover,.itmod:active{background:var(--paper)} .itmod .go{margin-left:auto;color:var(--muted)}
 .itmod .hrs{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap;padding-left:8px} .itmod .hrs+.go{margin-left:6px}
+.plnbtn{width:100%;justify-content:space-between;margin-top:8px} .plnbtn span{font-weight:500;color:var(--muted);font-size:13px}
+.plnbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden} .plnbar i{display:block;height:100%;background:var(--ok);border-radius:99px}
+.plnd{width:auto!important;min-height:34px!important;padding:4px 8px!important;font-size:14px!important}
+.plnlist{max-height:56vh;overflow:auto;margin:0 -4px;padding:0 4px}
+.plnch{margin-bottom:12px} .plnhd{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:6px 0;border-bottom:2px solid var(--line);position:sticky;top:0;background:var(--paper0,var(--paper));z-index:1} .plnhd span{font-size:12px;color:var(--muted);white-space:nowrap}
+.plnsub{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:8px 0 2px}
+.plnit{display:flex;align-items:center;gap:10px;padding:5px 0;border-bottom:1px solid var(--line)} .plnt{flex:1;min-width:0;font-size:15px} .plnt small{color:var(--muted);font-size:11px;margin-left:4px}
+.plnck{width:28px;height:28px;flex-shrink:0;border-radius:8px;border:2px solid var(--line2);background:var(--paper);display:grid;place-items:center;font-weight:800;color:#fff}
+.plnit.done .plnck{background:var(--ok);border-color:var(--ok)} .plnit.done .plnt{color:var(--muted);text-decoration:line-through}
+.plndate{flex-shrink:0;width:128px;font:inherit;font-size:13px;border:1px solid var(--line);border-radius:8px;padding:4px 6px;background:var(--bg);color:var(--ink)} .plndate.own{border-color:var(--accent);font-weight:700}
+.plnit.late .plndate{color:var(--no);border-color:var(--no)}
 .itsum{font-size:12px;color:var(--muted);text-align:right;margin-top:4px} .lpsub{font-weight:700;margin:10px 0 2px}
 .lpi{margin:0 0 12px;line-height:1.45} .lph{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin:14px 0 4px} .lpss{margin:0 0 4px;font-style:italic;color:var(--muted)}
 .lpul{margin:0 0 6px;padding-left:20px;line-height:1.4} .lpul li{margin:3px 0} .itmod .nr{min-width:44px;color:var(--muted);font-variant-numeric:tabular-nums} .itmod sup{color:var(--muted);margin-left:2px}
@@ -561,6 +572,7 @@ function cleanClass(d) {
     events: Array.isArray(d.events) ? d.events.map(e => ({ id: String(e.id || rid()), date: String(e.date || ""), time: String(e.time || ""), type: String(e.type || "sonst"), title: String(e.title || ""), note: String(e.note || ""), end: /^\d{4}-\d{2}-\d{2}$/.test(e.end || "") ? e.end : "" })) : [],
     sport: !!d.sport, it: !!d.it && !d.sport, wpf: ["I","II","IIIa","IIIb"].includes(d.wpf) ? d.wpf : "", jgst: Number(d.jgst) || 0, sex: d.sex === "m" || d.sex === "w" ? d.sex : "",
     raw: d.raw && typeof d.raw === "object" ? JSON.parse(JSON.stringify(d.raw)) : {},
+    plan: d.plan && typeof d.plan === "object" ? JSON.parse(JSON.stringify(d.plan)) : {},   // Stoffplan: start, end, dates{}, done{}
     pts: d.pts && typeof d.pts === "object" ? JSON.parse(JSON.stringify(d.pts)) : {},   // Punkte bei Stegreif/Kurzarbeit/Schulaufgabe
     info: d.info && typeof d.info === "object" ? Object.fromEntries(Object.entries(d.info).map(([k, v]) => [k, String(v ?? "")])) : {}
   };
@@ -936,7 +948,8 @@ function mathLbHtml(cls) {
   if (!lbs.length) return `<p class="hint">Für diese Jahrgangsstufe ist kein Lehrplan hinterlegt.</p>`;
   const sum = lbs.reduce((a, x) => a + (parseInt(x.h.replace(/\D/g, "")) || 0), 0);
   return `<div class="itgrp"><b>Lernbereiche</b>${lbs.map(x => `<button class="itmod" data-mlb="${x.n}"><span class="nr">${x.n}</span><span>${esc(x.t)}</span><span class="hrs">${esc(x.h)}</span><span class="go">›</span></button>`).join("")}
-    <div class="itsum">zusammen ca. ${sum} Std.</div></div>`;
+    <div class="itsum">zusammen ca. ${sum} Std.</div></div>
+    ${(st => `<button class="btn plnbtn" data-plan>📋 Stoffplan abhaken<span>${st.done}/${st.all} erledigt${st.late ? ` · <b style="color:var(--no)">${st.late} im Rückstand</b>` : ""}</span></button>`)(planStats(cls))}`;
 }
 function mathLpDialog(cls, n) {
   const k = mathKey(cls), lb = (mathLp()[k] || []).find(x => x.n === +n); if (!lb) return;
@@ -948,6 +961,76 @@ function mathLpDialog(cls, n) {
     <p class="hint" style="font-size:12px;margin-top:10px">Quelle: LehrplanPLUS Realschule Bayern, Fachlehrplan Mathematik</p>
     <div class="actions"><button class="btn primary" data-x="ok">Schließen</button></div>`,
     (m, close) => m.addEventListener("click", e => { if (e.target.closest("[data-x]")) close(); }));
+}
+/* ---------- Stoffplan / Lehrplan-Fortschritt (Gliederung nach Westermann-Arbeitsheft) ---------- */
+// Kapitel: t Titel, lb Lernbereich im LehrplanPLUS (für Stunden), p0 erste Seite, it: [Titel, Seite] bzw. ["#Zwischenüberschrift", Seite]
+const WM_BOOKS = {
+  "10II": { src: "Westermann Mathematik 10 II/III – Arbeitsheft", end: 78, ch: [
+    { t: "Trigonometrie", lb: 1, p0: 2, it: [["Sinus und Kosinus am Einheitskreis", 4], ["Der Tangens am Einheitskreis – Steigung einer Geraden", 5], ["Der Zusammenhang zwischen Sinus, Kosinus und Tangens", 7], ["Sinussatz", 8], ["Kosinussatz", 9], ["Vermischte Übungen zu Sinussatz und Kosinussatz", 10], ["Flächeninhalt eines Dreiecks", 12], ["Berechnungen in ebenen Figuren", 13], ["Aufgaben aus der Raumgeometrie", 15], ["Aufgaben aus dem Alltag", 17], ["Funktionale Abhängigkeiten", 18]] },
+    { t: "Quadratische Funktionen und Gleichungen", lb: 4, p0: 21, it: [["Normalparabeln mit y = x² und Parabeln mit y = ax²", 23], ["Die Scheitelpunktform y = a(x − xₛ)² + yₛ", 24], ["Die allgemeine Form y = ax² + bx + c", 25], ["Aufstellen von Parabelgleichungen", 27], ["Vermischte Übungen zu quadratischen Funktionen", 30], ["Quadratische Gleichungen lösen", 32], ["Diskriminante und das Lösen quadratischer Gleichungen", 33], ["Systeme quadratischer Gleichungen", 35], ["Funktionale Abhängigkeiten", 37], ["Aufgaben aus dem Alltag", 41]] },
+    { t: "Raumgeometrie", lb: 2, p0: 42, it: [["Volumen und Oberfläche des Prismas", 43], ["Volumen und Oberfläche des Prismas – Funktionale Abhängigkeiten", 44], ["Volumen und Oberfläche der Pyramide", 45], ["Volumen und Oberfläche der Pyramide – Funktionale Abhängigkeiten", 47], ["Prisma und Pyramide – Funktionale Abhängigkeiten", 49], ["#Rotationskörper", 50], ["Volumen und Oberfläche des Zylinders", 51], ["Zylinder – Funktionale Abhängigkeiten", 52], ["Volumen und Oberfläche des Kegels", 53], ["Kegel – Funktionale Abhängigkeiten", 54], ["Volumen und Oberflächeninhalt der Kugel", 55], ["Zusammengesetzte Körper", 56], ["Einbeschreibungsaufgaben", 58], ["Aufgaben im Raum", 59]] },
+    { t: "Daten und Zufall", lb: 5, p0: 61, it: [["Mehrstufige Zufallsexperimente", 62], ["Pfadregeln", 64], ["Vermischte Übungen", 66]] },
+    { t: "Exponentialfunktionen", lb: 3, p0: 70, it: [["Exponentialfunktionen", 71], ["Exponentielle Wachstumsprozesse", 72], ["Exponentielle Abnahmeprozesse", 74], ["Exponentialgleichungen lösen", 76]] },
+  ] },
+};
+const dISO = d => { const x = new Date(d); x.setMinutes(x.getMinutes() - x.getTimezoneOffset()); return x.toISOString().slice(0, 10); };
+function planDefaults(cls) {
+  const t = new Date(), y = t.getMonth() >= 7 ? t.getFullYear() : t.getFullYear() - 1, jg = jgstFromName(cls.name);
+  return { start: `${y}-09-15`, end: jg === 10 ? `${y + 1}-05-28` : `${y + 1}-07-23` };
+}
+// Kapitel und Themen mit geschätzten Enddaten (proportional zu Lehrplan-Stunden bzw. Seitenzahl)
+function planModel(cls) {
+  const k = mathKey(cls); if (!k) return null;
+  const lbs = mathLp()[k] || [], hrs = n => parseInt((lbs.find(x => x.n === n)?.h || "").replace(/\D/g, "")) || 10;
+  const bk = WM_BOOKS[k];
+  let chs;
+  if (bk) chs = bk.ch.map((c, i) => { const pEnd = (bk.ch[i + 1]?.p0 || bk.end) - 1; const items = c.it.map((x, j) => { const nx = c.it.slice(j + 1).find(y => !y[0].startsWith("#")); return { t: x[0].replace(/^#/, ""), sub: x[0].startsWith("#"), p: x[1], pe: nx ? nx[1] - 1 : pEnd }; }); return { t: c.t, h: hrs(c.lb), p0: c.p0, pe: pEnd, items }; });
+  else chs = lbs.map(lb => ({ t: lb.t, h: parseInt(lb.h.replace(/\D/g, "")) || 10, items: lb.items.some(x => x.sub) ? lb.items.filter(x => x.sub).map(x => ({ t: x.sub })) : [{ t: "Lernbereich " + lb.n + " abgeschlossen" }] }));
+  const pl = cls.plan || {}, df = planDefaults(cls), s0 = new Date(pl.start || df.start).getTime(), s1 = new Date(pl.end || df.end).getTime();
+  const H = chs.reduce((a, c) => a + c.h, 0) || 1; let cum = 0;
+  chs.forEach((c, ci) => {
+    const a = s0 + (s1 - s0) * cum / H; cum += c.h; const b = s0 + (s1 - s0) * cum / H;
+    c.endAuto = dISO(b);
+    const real = c.items.filter(x => !x.sub);
+    real.forEach((x, j) => { const f = c.p0 != null ? (x.pe - c.p0 + 1) / (c.pe - c.p0 + 1) : (j + 1) / real.length; x.auto = dISO(a + (b - a) * f); });
+    c.items.forEach((x, j) => { x.id = ci + "." + j; x.date = pl.dates?.[x.id] || x.auto; x.own = !!pl.dates?.[x.id]; x.done = pl.done?.[x.id] || ""; });
+  });
+  return { src: bk ? bk.src : `LehrplanPLUS Mathematik ${k.replace(/(\d+)(I|II)$/, "$1 ($2)")} – Lernbereiche`, book: !!bk, chs, start: pl.start || df.start, end: pl.end || df.end };
+}
+function planStats(cls) {
+  const m = planModel(cls); if (!m) return null; const today = todayISO();
+  const all = m.chs.flatMap(c => c.items.filter(x => !x.sub)), done = all.filter(x => x.done).length, late = all.filter(x => !x.done && x.date < today).length;
+  return { m, all: all.length, done, late };
+}
+function planDialog(cls) {
+  cls.plan = cls.plan || {};
+  modal(`<h3>Stoffplan · ${esc(cls.name)}</h3><div id="pln"></div>
+    <div class="actions"><button class="btn primary" data-x="ok">Fertig</button></div>`, (m, close) => {
+    const draw = () => {
+      const st = planStats(cls); if (!st) { $("#pln", m).innerHTML = `<p class="hint">Wähle unter Infos zuerst die Wahlpflichtfächergruppe.</p>`; return; }
+      const { m: md, all, done, late } = st, today = todayISO(), sy = m.querySelector(".plnlist")?.scrollTop || 0;
+      $("#pln", m).innerHTML = `<p class="hint" style="margin:-6px 0 8px">${esc(md.src)}${md.book ? "" : " · für diese Klasse ist noch keine Arbeitsheft-Gliederung hinterlegt"}</p>
+        <div class="plnbar"><i style="width:${all ? Math.round(done / all * 100) : 0}%"></i></div>
+        <p style="margin:4px 0 10px;font-size:14px"><b>${done} von ${all}</b> erledigt${late ? ` · <b style="color:var(--no)">${late} im Rückstand</b>` : done < all ? " · im Plan" : " · alles geschafft 🎉"}</p>
+        <div class="row" style="gap:8px;align-items:center;margin-bottom:10px;font-size:13px;color:var(--muted)">Zeitraum <input class="inp plnd" type="date" id="pls" value="${md.start}"> bis <input class="inp plnd" type="date" id="ple" value="${md.end}"></div>
+        <div class="plnlist">${md.chs.map(c => { const r = c.items.filter(x => !x.sub), d = r.filter(x => x.done).length;
+          return `<div class="plnch"><div class="plnhd"><b>${esc(c.t)}</b><span>${d}/${r.length} · ca. ${c.h} Std. · bis ${fmtDate(c.endAuto)}</span></div>
+          ${c.items.map(x => x.sub ? `<div class="plnsub">${esc(x.t)}</div>` : `<div class="plnit${x.done ? " done" : !x.done && x.date < today ? " late" : ""}"><button class="plnck" data-pck="${x.id}" aria-label="abhaken">${x.done ? "✓" : ""}</button><span class="plnt">${esc(x.t)}${x.p ? ` <small>S. ${x.p}</small>` : ""}</span><input type="date" class="plndate${x.own ? " own" : ""}" data-pdt="${x.id}" value="${x.date}" title="Geplantes Ende (anpassbar, leeren = automatisch)"></div>`).join("")}</div>`; }).join("")}</div>`;
+      const l = m.querySelector(".plnlist"); if (l) l.scrollTop = sy;
+    };
+    draw();
+    const save = () => { store.save("c_" + cls.id); };
+    m.addEventListener("click", e => {
+      const ck = e.target.closest("[data-pck]");
+      if (ck) { const id = ck.dataset.pck; cls.plan.done = cls.plan.done || {}; if (cls.plan.done[id]) delete cls.plan.done[id]; else cls.plan.done[id] = todayISO(); save(); draw(); return; }
+      if (e.target.closest("[data-x]")) { close(); render(); }
+    });
+    m.addEventListener("change", e => {
+      const dt = e.target.closest("[data-pdt]");
+      if (dt) { cls.plan.dates = cls.plan.dates || {}; if (dt.value) cls.plan.dates[dt.dataset.pdt] = dt.value; else delete cls.plan.dates[dt.dataset.pdt]; save(); draw(); return; }
+      if (e.target.id === "pls" || e.target.id === "ple") { const df = planDefaults(cls); const v = e.target.value; if (e.target.id === "pls") { if (v && v !== df.start) cls.plan.start = v; else delete cls.plan.start; } else { if (v && v !== df.end) cls.plan.end = v; else delete cls.plan.end; } save(); draw(); }
+    });
+  });
 }
 const WPF_L = { I: "I", II: "II", IIIa: "III a", IIIb: "III b (Kunst)" };
 const wpfFromName = name => { const m = String(name || "").match(/(?:^|[\s\-\/(])(III\s*[ab]|II|I)(?=$|[\s\-\/)])/i); if (!m) return ""; const v = m[1].replace(/\s/g, ""); return { iiia: "IIIa", iiib: "IIIb", ii: "II", i: "I" }[v.toLowerCase()] || ""; };
@@ -1258,7 +1341,7 @@ function infoDialog() {
     <div class="actions"><button class="btn" data-x="cancel">Abbrechen</button><button class="btn primary" data-x="ok">Speichern</button></div>`,
     (m, close) => {
       m.addEventListener("click", e => { const b = e.target.closest("[data-itmod]"); if (b) itLpDialog(b.dataset.itmod); });
-      m.addEventListener("click", e => { const b = e.target.closest("[data-mlb]"); if (b) mathLpDialog(cls, b.dataset.mlb); });
+      m.addEventListener("click", e => { const b = e.target.closest("[data-mlb]"); if (b) mathLpDialog(cls, b.dataset.mlb); if (e.target.closest("[data-plan]")) planDialog(cls); });
       if ($("#wpf", m)) seg(m, "#wpf", v => { cls.wpf = v; store.save("c_" + cls.id); if ($("#itmods", m)) $("#itmods", m).innerHTML = itModulesHtml(cls); if ($("#mlbs", m)) $("#mlbs", m).innerHTML = mathLbHtml(cls); });
       if ($("#msx", m)) seg(m, "#msx", v => { cls.sex = v; drawTabs(); recomputeAllSport(cls); store.save("c_" + cls.id); render(); toast("Sportnoten nach Tabelle " + (v === "w" ? "Mädchen" : "Jungen") + " berechnet"); });
       // nur die Tabellen für das eingestellte Geschlecht (ohne Einstellung: alle)
