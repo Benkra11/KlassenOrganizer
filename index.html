@@ -191,6 +191,7 @@ textarea.inp{min-height:220px;resize:vertical;line-height:1.45}
 .seat:not(.full){border:1.5px dashed color-mix(in srgb,var(--line2) 55%,transparent);opacity:.55}
 .seat:not(.full).target{opacity:1;border-color:var(--accent)}
 .seat.full{border:1px solid var(--line);background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.seat.full.low{border:2px solid #E8B90F;box-shadow:0 0 0 3px rgba(232,185,15,.18)} .lowtag{position:absolute;top:5px;right:6px;background:#FBEFC2;color:#8a6a00;border-radius:999px;padding:1px 7px;font-size:clamp(9px,min(8cqh,9cqw),12px);font-weight:700;z-index:1}
 .seat.sel{outline:3px solid var(--accent);outline-offset:2px}
 .seat.target{border-color:var(--accent)}
 .seat .ph{height:48cqh;margin-top:auto;max-height:80cqw;aspect-ratio:1;flex-shrink:1;min-height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:min(18cqh,22cqw);overflow:hidden}
@@ -325,6 +326,10 @@ td.m0{background:color-mix(in srgb,#d9a400 14%,var(--paper))}
 .av{width:24px;height:24px;font-size:9px} .mitcell{min-height:36px;padding:2px 6px} .mitcell .mb{width:26px;height:26px;font-size:15px}
 .colhead{min-height:56px;padding:6px} .addcol{min-height:56px}
 /* Gesamtschnitt: Farbbalken + farbige Zahl, Spalte in Klassenfarbe */
+.genw{display:block;margin-top:2px;color:var(--no);font-size:11px;font-weight:800;white-space:nowrap}
+.genbox{background:var(--no-soft);color:var(--no);border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:14px;line-height:1.4} .genbox b{display:block;margin-bottom:2px}
+.geftag{margin-left:auto;flex-shrink:0;background:var(--no-soft);color:var(--no);border-radius:999px;padding:1px 7px;font-size:11px;font-weight:800;white-space:nowrap}
+tr.gefrow>td.c-name{box-shadow:inset 3px 0 0 var(--no)}
 .gpill{position:relative;display:inline-block;padding-left:11px;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums}
 .gpill{padding-left:0!important} .gpill::before{content:"Ø";margin-right:4px;font-weight:600;opacity:.75}   /* Ø-Zeichen in Notenfarbe */
 .gp1,.gp2{color:var(--ok)} .gp3{color:var(--muted)} .gp4{color:#b08300} .gp5{color:var(--no)} .gp6{color:#a3231b}
@@ -363,7 +368,9 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
 /* Mitarbeit als Punkte: grün = +, rot = − */
 .mitcell .mb{width:26px;height:26px;border-radius:50%;font-size:15px}
 .mitcell .mv{display:flex;flex-wrap:wrap;gap:2px;justify-content:center;align-items:center;align-content:center;padding:2px 0}
-.mdot{width:7px;height:7px;border-radius:50%;flex-shrink:0} .mstar{color:#c99a10;font-size:13px;line-height:9px;flex-shrink:0} .mb.mbstar{color:#c99a10} .mb.mbstar,.smit .sstar{display:grid;place-items:center;padding:0} .stsvg{width:62%;height:62%;display:block} .mdp{background:var(--ok)} .mdm{background:var(--no)}
+.mdot{width:7px;height:7px;border-radius:50%;flex-shrink:0} .mdn{background:#E8B90F}
+.mb.mbneu i,.smit .sneu i{display:block;width:10px;height:10px;border-radius:50%;background:#E8B90F} .mb.mbneu,.smit .sneu{display:grid;place-items:center;padding:0}
+.smit .sneu i{width:clamp(7px,min(7cqh,8cqw),10px);height:clamp(7px,min(7cqh,8cqw),10px)} .mstar{color:#c99a10;font-size:13px;line-height:9px;flex-shrink:0} .mb.mbstar{color:#c99a10} .mb.mbstar,.smit .sstar{display:grid;place-items:center;padding:0} .stsvg{width:62%;height:62%;display:block} .mdp{background:var(--ok)} .mdm{background:var(--no)}
 .clk{position:fixed;inset:0;z-index:48;background:var(--bg);display:flex;flex-direction:column;padding:calc(var(--sat) + 10px) calc(var(--sar) + 12px) calc(var(--sab) + 12px) calc(var(--sal) + 12px);gap:12px}
 .tour .tbody{flex:1;overflow:auto;padding-bottom:10px}
 .tslot{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:10px 12px;margin-bottom:10px} .tslot.cur{border:2px solid var(--accent)} .tslot.ko{background:color-mix(in srgb,#C79A2B 9%,var(--paper))}
@@ -457,6 +464,7 @@ td.ausf{background:color-mix(in srgb,#d9a400 16%,var(--paper))!important}
 <div class="bar hidden" id="bar">
   <h1 id="clsName" class="hidden"></h1>
   <span class="meta hidden" id="clsMeta"></span>
+  <button class="btn undobtn hidden" data-act="undo" title="Rückgängig" aria-label="Rückgängig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg></button>
   <button class="btn" data-act="info" title="Infos" aria-label="Infos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>Infos</button>
   <button class="btn calbtn" data-act="cal" title="Kalender" aria-label="Kalender"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button>
   <button class="btn primary" data-act="seats" title="Sitzplan" aria-label="Sitzplan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="6" rx="1.5"/><rect x="14" y="3" width="7" height="6" rx="1.5"/><rect x="3" y="14" width="7" height="6" rx="1.5"/><rect x="14" y="14" width="7" height="6" rx="1.5"/></svg>Sitzplan</button>
@@ -582,9 +590,10 @@ function mitCol(cls) {
   if (cols.length) return cols[cols.length - 1];
   const c = { id: rid(), title: "Mitarbeit", type: "mit", date: "", weight: 1 }; cls.columns.unshift(c); return c;
 }
-// Mitarbeit: p = Plus, m = Minus, s = Sterne (★ zählt wie +2)
-const mitN = v => (v?.p || 0) - (v?.m || 0) + 2 * (v?.s || 0), mitAny = v => !!(v?.p || v?.m || v?.s);
-const mitDots = v => '<span class="mdot mdm"></span>'.repeat(v?.m || 0) + '<span class="mdot mdp"></span>'.repeat(v?.p || 0) + '<span class="mstar">★</span>'.repeat(v?.s || 0);   // rot · grün · Sterne
+// Mitarbeit: p = Plus, m = Minus, n = neutral (zählt 0), s = Sterne (★ zählt wie +2)
+const mitN = v => (v?.p || 0) - (v?.m || 0) + 2 * (v?.s || 0), mitAny = v => !!(v?.p || v?.m || v?.s || v?.n);
+const mitCount = v => (v?.p || 0) + (v?.m || 0) + (v?.s || 0) + (v?.n || 0);
+const mitDots = v => '<span class="mdot mdm"></span>'.repeat(v?.m || 0) + '<span class="mdot mdn"></span>'.repeat(v?.n || 0) + '<span class="mdot mdp"></span>'.repeat(v?.p || 0) + '<span class="mstar">★</span>'.repeat(v?.s || 0);   // rot · gelb · grün · Sterne
 const mitLevel = v => { const p = v?.p || 0, m = v?.m || 0, n = mitN(v); return !mitAny(v) ? "" : n === 0 ? "m0" : n > 0 ? "mp" + Math.min(3, n) : "mn" + Math.min(3, -n); };
 const mitText = v => { const n = mitN(v); return !mitAny(v) ? "" : (n > 0 ? "+" : n < 0 ? "−" : "±") + Math.abs(n); };
 
@@ -695,6 +704,37 @@ const store = {
   }
 };
 let booted = false;
+
+/* ---------- Rückgängig: Stapel der Klassen-Zustände vor jeder Änderung ---------- */
+const UNDO = { stack: [], snap: {}, busy: false, ready: false };   // erst nach der ersten Berührung aufzeichnen (keine Ladeschritte)
+["pointerdown", "keydown"].forEach(ev => document.addEventListener(ev, () => { UNDO.ready = true; }, { capture: true, once: true }));
+const undoSnap = id => { const c = S.classes[id]; return c ? JSON.stringify(c) : null; };
+const _origSave = store.save.bind(store);
+store.save = function (...keys) {
+  if (!UNDO.busy) keys.forEach(k => {
+    if (!k.startsWith("c_")) return;
+    const id = k.slice(2), now = undoSnap(id), prev = UNDO.snap[k];
+    if (now == null || prev == null || now === prev || !UNDO.ready) { if (now != null) UNDO.snap[k] = now; return; }
+    const top = UNDO.stack[UNDO.stack.length - 1], t = Date.now();
+    if (!(top && top.key === k && t - top.t < 1500)) { UNDO.stack.push({ key: k, json: prev, t }); if (UNDO.stack.length > 40) UNDO.stack.shift(); }
+    else top.t = t;
+    UNDO.snap[k] = now;
+  });
+  updUndo();
+  return _origSave(...keys);
+};
+function updUndo() { const b = document.querySelector('[data-act="undo"]'); if (b) b.classList.toggle("hidden", !UNDO.stack.length); }
+function doUndo() {
+  let e; while ((e = UNDO.stack.pop()) && !S.classes[e.key.slice(2)]);
+  if (!e) { updUndo(); return; }
+  const id = e.key.slice(2);
+  S.classes[id] = cleanClass(JSON.parse(e.json)); UNDO.snap[e.key] = e.json;
+  UNDO.busy = true; store.save(e.key); UNDO.busy = false;
+  if (S.active !== id) { S.active = id; try { lsSet("ko_active", id); } catch {} }
+  document.querySelectorAll(".clk,.backdrop").forEach(x => x.remove());
+  render(); if (!$("#seats").classList.contains("hidden")) renderSeats();
+  updUndo(); toast("Letzte Änderung rückgängig gemacht");
+}
 
 function setStatus(s) {
   const el = $("#status");
@@ -981,6 +1021,11 @@ function gradeNum(v) {
 }
 const gradeBase = v => { if (/^\d(\.\d+)$/.test(String(v ?? ""))) return Math.round(+v); const m = String(v ?? "").match(/^([1-6])/); return m ? +m[1] : null; };
 const showGrade = v => v === "f" ? "fehlt" : /^\d(\.\d+)$/.test(String(v)) ? (+v).toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : String(v).replace("-", "−");
+// Gefährdet: Schnitt ab 4,50 (entspricht Note 5)
+const isGef = a => a != null && a >= 4.5;
+// Genehmigungsgrenze: schriftlicher Leistungsnachweis mit Schnitt schlechter als 4,0
+const colAvg = (cls, c) => { const n = cls.students.map(s => gradeNum(cls.cells[c.id]?.[s.id])).filter(x => x != null); return n.length ? n.reduce((a, b) => a + b, 0) / n.length : null; };
+const needGen = (cls, c) => canDone(c) && (a => a != null && a > 4.0)(colAvg(cls, c));
 function studentAvg(cls, sid) {
   let sw = 0, sum = 0;
   cls.columns.forEach(c => { if (c.type !== "grade") return; const g = gradeNum(cls.cells[c.id]?.[sid]); if (g != null) { sum += g * c.weight; sw += c.weight; } });
@@ -992,6 +1037,8 @@ function render() {
   normalize();
   renderTabs();
   const cls = cur(), main = $("#main"), bar = $("#bar");
+  if (cls && UNDO.snap["c_" + cls.id] == null) UNDO.snap["c_" + cls.id] = undoSnap(cls.id);
+  updUndo();
   if (!cls) {
     bar.classList.add("hidden");
     main.innerHTML = `<div class="empty"><div class="card"><h2>Willkommen im Klassen-Organizer</h2><p>Lege deine erste Klasse an. Danach kannst du die Namensliste einfügen, Spalten für Hausaufgaben oder Noten anlegen und den Sitzplan bauen.</p><div class="row" style="justify-content:center"><button class="btn primary" data-act="newclass">+ Klasse anlegen</button><button class="btn" data-act="import">⤓ Aus Sicherung importieren</button><button class="btn calbtn" data-act="cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Kalender</button></div></div></div>`;
@@ -1019,8 +1066,9 @@ function render() {
   const needMap = Object.fromEntries(cls.columns.filter(isAusfrage).map(c => [c.id, ausfNeeds(cls, c)]));
   cls.students.forEach((s, i) => {
     const sep = isSport(cls) && i > 0 && (s.kl || "") !== (cls.students[i - 1].kl || "");   // Trennstrich zwischen Klassen
-    h += `<tr${sep ? ' class="klsep"' : ""}><td class="c-name"><button class="namecell" data-stu="${s.id}"><span class="no">${i + 1}</span>${avatar(s)}<span class="nm">${esc(s.name)}</span>${s.kl ? `<span class="ctag">${esc(s.kl)}</span>` : ""}</button></td>`;
-    if (hasGrades) { const a = studentAvg(cls, s.id); h += `<td class="c-avg"><div class="avgcell">${a == null ? "" : `<span class="gpill gp${Math.min(6, Math.max(1, Math.round(a)))}">${fmtNum(a)}</span>`}</div></td>`; }
+    const sa = hasGrades ? studentAvg(cls, s.id) : null, gef = isGef(sa);
+    h += `<tr class="${sep ? "klsep" : ""}${gef ? " gefrow" : ""}"><td class="c-name"><button class="namecell" data-stu="${s.id}"><span class="no">${i + 1}</span>${avatar(s)}<span class="nm">${esc(s.name)}</span>${s.kl ? `<span class="ctag">${esc(s.kl)}</span>` : ""}${gef ? `<span class="geftag" title="Gefährdet: Schnitt ab 4,50">⚠</span>` : ""}</button></td>`;
+    if (hasGrades) { const a = sa; h += `<td class="c-avg"><div class="avgcell">${a == null ? "" : `<span class="gpill gp${Math.min(6, Math.max(1, Math.round(a)))}">${fmtNum(a)}</span>`}</div></td>`; }
     cls.columns.forEach(c => {
       const v = cls.cells[c.id]?.[s.id];
       const act = activeCell && activeCell.c === c.id && activeCell.s === s.id ? " active" : "";
@@ -1036,7 +1084,7 @@ function render() {
       } else if (c.type === "mit") {
         const p = v?.p || 0, m = v?.m || 0, st = v?.s || 0, net = mitN(v), any = mitAny(v);
         const lvl = !any ? "" : net === 0 ? "m0" : net > 0 ? "mp" + Math.min(3, net) : "mn" + Math.min(3, -net);
-        h += `<td><div class="mitcell"><button class="mb" data-mit="-" data-c="${c.id}" data-s="${s.id}" aria-label="Minus">−</button><button class="mv" data-mv data-c="${c.id}" data-s="${s.id}" aria-label="${any ? `${st} Sterne, +${p} / −${m}` : "keine Einträge"}">${mitDots(v)}</button><button class="mb" data-mit="+" data-c="${c.id}" data-s="${s.id}" aria-label="Plus">+</button>${c.nostar ? "" : `<button class="mb mbstar" data-mit="*" data-c="${c.id}" data-s="${s.id}" aria-label="Stern (zählt +2)"><svg class="stsvg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.5 4.1 1.2 5.9L12 16.5l-5.3 2.9 1.2-5.9-4.5-4.1 6-.7z" fill="currentColor"/></svg></button>`}</div></td>`;
+        h += `<td><div class="mitcell"><button class="mb" data-mit="-" data-c="${c.id}" data-s="${s.id}" aria-label="Minus">−</button><button class="mb mbneu" data-mit="o" data-c="${c.id}" data-s="${s.id}" aria-label="Neutral"><i></i></button><button class="mv" data-mv data-c="${c.id}" data-s="${s.id}" aria-label="${any ? `${st} Sterne, +${p} / −${m}` : "keine Einträge"}">${mitDots(v)}</button><button class="mb" data-mit="+" data-c="${c.id}" data-s="${s.id}" aria-label="Plus">+</button>${c.nostar ? "" : `<button class="mb mbstar" data-mit="*" data-c="${c.id}" data-s="${s.id}" aria-label="Stern (zählt +2)"><svg class="stsvg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.5 4.1 1.2 5.9L12 16.5l-5.3 2.9 1.2-5.9-4.5-4.1 6-.7z" fill="currentColor"/></svg></button>`}</div></td>`;
       } else {
         h += `<td class="${act.trim()}"><button class="cell text" data-c="${c.id}" data-s="${s.id}">${esc(v || "")}</button></td>`;
       }
@@ -1046,7 +1094,7 @@ function render() {
   h += `</tbody><tfoot><tr><td class="c-name"><div class="footname"><small style="margin-top:0">${cls.students.length} Schüler</small>${true ? `<button class="btn" data-act="voll" style="margin-top:6px;min-height:32px;padding:4px 10px;font-size:13px">✓ Vollständigkeit prüfen</button>` : ""}</div></td>`;
   if (hasGrades) {
     const avgs = cls.students.map(s => studentAvg(cls, s.id)).filter(a => a != null);
-    const nCrit = avgs.filter(a => a >= 4.5).length;
+    const nCrit = avgs.filter(isGef).length;
     h += `<td class="c-avg"><button class="foot footbtn" data-aopen="1"><b>${avgs.length ? fmtNum(avgs.reduce((a, b) => a + b, 0) / avgs.length) : "–"}</b>${nCrit ? `<span style="color:var(--no);font-weight:700">${nCrit} gefährdet</span>` : ""}</button></td>`;
   }
   cls.columns.forEach(c => {
@@ -1056,7 +1104,7 @@ function render() {
       const dist = [1, 2, 3, 4, 5, 6].map(g => vals.filter(v => gradeBase(v) === g).length);
       const mx = Math.max(1, ...dist);
       const miss = isAusfrage(c) ? 0 : vals.filter(v => !v || v === "f").length;
-      h += `<td><button class="foot footbtn" data-gopen="${c.id}">${miss ? `<span class="lbl" style="color:var(--no);font-weight:700">${miss === 1 ? "1 fehlt" : miss + " fehlen"}</span>` : ""}${isAusfrage(c) ? `<span class="lbl">Ausfrage ›</span>` : `<b>Ø ${nums.length ? fmtNum(nums.reduce((a, b) => a + b, 0) / nums.length) : "–"}</b>`}`;
+      h += `<td><button class="foot footbtn" data-gopen="${c.id}">${miss ? `<span class="lbl" style="color:var(--no);font-weight:700">${miss === 1 ? "1 fehlt" : miss + " fehlen"}</span>` : ""}${isAusfrage(c) ? `<span class="lbl">Ausfrage ›</span>` : `<b>Ø ${nums.length ? fmtNum(nums.reduce((a, b) => a + b, 0) / nums.length) : "–"}</b>`}${needGen(cls, c) ? `<span class="genw" title="Schnitt schlechter als 4,0 – Genehmigung der Schulleitung nötig">⚠ Genehmigung</span>` : ""}`;
       const an = anschlaege(cls, c);
       if (an) h += `<span class="ansch"><b>${an.toLocaleString("de-DE")}</b> Anschläge · ${colHalf(c).split("-")[1]}. HJ</span>`;
       else if (nums.length) h += `<div class="dist">${dist.map(n => `<span style="height:${Math.round(n / mx * 100)}%" title="${n}"></span>`).join("")}</div><div class="distl">${dist.map(n => `<span>${n}</span>`).join("")}</div>`;
@@ -1560,9 +1608,10 @@ function mitDialog(c, s) {
   const cls = cur(), col = cls.columns.find(x => x.id === c), stu = cls.students.find(x => x.id === s);
   const v = Object.assign({ p: 0, m: 0 }, cls.cells[c]?.[s]);
   modal(`<h3>${esc(stu.name)}</h3><p class="hint">${esc(col.title)}${col.date ? " · " + fmtDate(col.date) : ""}</p>
-    <div class="row" style="gap:20px;justify-content:center;margin:6px 0 10px">
+    <div class="row" style="gap:12px 20px;flex-wrap:wrap;justify-content:center;max-width:340px;margin:6px auto 10px">
       <div style="text-align:center"><div class="stepper"><button data-x="p-">−</button><b id="mp" style="color:var(--ok);font-size:20px;min-width:40px">${v.p}</b><button data-x="p+">+</button></div><div style="font-size:12px;color:var(--muted);margin-top:4px">Plus</div></div>
       <div style="text-align:center"><div class="stepper"><button data-x="m-">−</button><b id="mm" style="color:var(--no);font-size:20px;min-width:40px">${v.m}</b><button data-x="m+">+</button></div><div style="font-size:12px;color:var(--muted);margin-top:4px">Minus</div></div>
+      <div style="text-align:center"><div class="stepper"><button data-x="n-">−</button><b id="mn" style="color:#c99a10;font-size:20px;min-width:40px">${v.n || 0}</b><button data-x="n+">+</button></div><div style="font-size:12px;color:var(--muted);margin-top:4px">Neutral</div></div>
       <div style="text-align:center"><div class="stepper"><button data-x="s-">−</button><b id="ms" style="color:#c99a10;font-size:20px;min-width:40px">${v.s || 0}</b><button data-x="s+">+</button></div><div style="font-size:12px;color:var(--muted);margin-top:4px">★ (zählt +2)</div></div>
     </div>
     <div class="actions"><button class="btn danger left" data-x="reset">Zurücksetzen</button><button class="btn primary" data-x="ok">Fertig</button></div>`,
@@ -1571,10 +1620,11 @@ function mitDialog(c, s) {
       if (x === "p+") v.p++; if (x === "p-") v.p = Math.max(0, v.p - 1);
       if (x === "m+") v.m++; if (x === "m-") v.m = Math.max(0, v.m - 1);
       if (x === "s+") v.s = (v.s || 0) + 1; if (x === "s-") v.s = Math.max(0, (v.s || 0) - 1);
-      if (x === "reset") { v.p = 0; v.m = 0; v.s = 0; }
-      $("#mp", m).textContent = v.p; $("#mm", m).textContent = v.m; $("#ms", m).textContent = v.s || 0;
+      if (x === "n+") v.n = (v.n || 0) + 1; if (x === "n-") v.n = Math.max(0, (v.n || 0) - 1);
+      if (x === "reset") { v.p = 0; v.m = 0; v.s = 0; v.n = 0; }
+      $("#mp", m).textContent = v.p; $("#mm", m).textContent = v.m; $("#ms", m).textContent = v.s || 0; $("#mn", m).textContent = v.n || 0;
       cls.cells[c] = cls.cells[c] || {};
-      if (mitAny(v)) cls.cells[c][s] = { p: v.p, m: v.m, ...(v.s ? { s: v.s } : {}) }; else delete cls.cells[c][s];
+      if (mitAny(v)) cls.cells[c][s] = { p: v.p, m: v.m, ...(v.s ? { s: v.s } : {}), ...(v.n ? { n: v.n } : {}) }; else delete cls.cells[c][s];
       store.save("c_" + cls.id); render(); if (!$("#seats").classList.contains("hidden")) renderSeats();
       if (x === "ok" || x === "reset") close();
     }));
@@ -1603,6 +1653,111 @@ function openList(colId) {
     });
 }
 
+/* ---------- Notenliste als PDF (eigener kleiner PDF-Erzeuger, offline) ---------- */
+const PDFW = (() => {   // Helvetica-Breiten (1/1000 em) für Zeichen 32–126
+  const w = [278,278,355,556,556,889,667,191,333,333,389,584,278,333,278,278,556,556,556,556,556,556,556,556,556,556,278,278,584,584,584,556,1015,667,667,722,722,667,611,778,722,278,500,667,556,833,722,778,667,778,722,667,611,722,667,944,667,667,611,278,278,278,469,556,333,556,556,500,556,556,278,556,556,222,222,500,222,833,556,556,556,556,333,500,278,556,500,722,500,500,500,334,260,334,584];
+  const x = { "ä": 556, "ö": 556, "ü": 556, "Ä": 667, "Ö": 778, "Ü": 722, "ß": 611, "Ø": 778, "–": 556, "·": 278, "é": 556, "è": 556, "à": 556, "ç": 500 };
+  return (ch, bold) => { const c = ch.charCodeAt(0); const v = c >= 32 && c <= 126 ? w[c - 32] : (x[ch] || 556); return bold ? v * 1.06 : v; };
+})();
+function pdfText(s) {   // → WinAnsi, PDF-escaped
+  const map = { "–": "\x96", "—": "\x97", "…": "\x85", "„": "\x84", "“": "\x93", "”": "\x94", "‚": "\x82", "‘": "\x91", "’": "\x92", "−": "-", "€": "\x80", "•": "\x95" };
+  let o = "";
+  for (const ch of String(s)) { let c = map[ch] ?? ch; if (c.charCodeAt(0) > 255) c = "?"; o += c; }
+  return o.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+const pdfTW = (s, size, bold) => [...String(s)].reduce((a, ch) => a + PDFW(ch, bold), 0) * size / 1000;
+function pdfFit(s, size, bold, max) { s = String(s); if (pdfTW(s, size, bold) <= max) return s; while (s.length > 1 && pdfTW(s + "…", size, bold) > max) s = s.slice(0, -1); return s + "…"; }
+function buildPdf(pages) {   // pages: Array von Content-Strings, A4 quer
+  const objs = [], add = s => { objs.push(s); return objs.length; };
+  const f1 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>");
+  const f2 = add("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>");
+  const pagesId = objs.length + 1 + pages.length * 2; const kids = [];
+  pages.forEach(c => { const cid = add(`<< /Length ${c.length} >>\nstream\n${c}\nendstream`); kids.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 842 595] /Resources << /Font << /F1 ${f1} 0 R /F2 ${f2} 0 R >> >> /Contents ${cid} 0 R >>`)); });
+  add(`<< /Type /Pages /Kids [${kids.map(k => k + " 0 R").join(" ")}] /Count ${kids.length} >>`);
+  const cat = add(`<< /Type /Catalog /Pages ${pagesId} 0 R >>`);
+  let out = "%PDF-1.4\n%\xE2\xE3\xCF\xD3\n"; const offs = [];
+  objs.forEach((o, i) => { offs.push(out.length); out += `${i + 1} 0 obj\n${o}\nendobj\n`; });
+  const xref = out.length;
+  out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n` + offs.map(o => String(o).padStart(10, "0") + " 00000 n \n").join("");
+  out += `trailer\n<< /Size ${objs.length + 1} /Root ${cat} 0 R >>\nstartxref\n${xref}\n%%EOF`;
+  const bytes = new Uint8Array(out.length); for (let i = 0; i < out.length; i++) bytes[i] = out.charCodeAt(i) & 255;
+  return bytes;
+}
+function gradesPdf(cls) {
+  const W = 842, H = 595, M = 32, cols = cls.columns.filter(c => c.type === "grade");
+  const rows = cls.students.map((s, i) => ({ s, i, a: studentAvg(cls, s.id) }));
+  const nGef = rows.filter(r => isGef(r.a)).length;
+  const nameW = 170, nrW = 20, avgW = 52, availCols = W - 2 * M - nrW - nameW - avgW;
+  const cw = cols.length ? Math.max(26, Math.min(64, availCols / cols.length)) : 0;
+  const perPage = Math.max(1, Math.floor(availCols / 26)), colPages = [];
+  for (let i = 0; i < Math.max(1, cols.length); i += perPage) colPages.push(cols.slice(i, i + perPage));
+  const rowH = 15, headH = 40, top = H - M - 44, maxRows = Math.floor((top - headH - 44) / rowH);
+  const rowChunks = []; for (let i = 0; i < Math.max(1, rows.length); i += maxRows) rowChunks.push(rows.slice(i, i + maxRows));
+  const C = (r, g, b) => `${r} ${g} ${b}`, red = C(0.75, 0.13, 0.11), grey = C(0.42, 0.45, 0.43), ink = C(0.1, 0.12, 0.11);
+  const pages = [], stamp = new Date().toLocaleDateString("de-DE");
+  colPages.forEach((cp, cpi) => rowChunks.forEach((rc, rci) => {
+    let c = "";
+    const t = (x, y, s, size = 9, bold = false, col = ink, align = "l", max = 0) => {
+      let str = max ? pdfFit(s, size, bold, max) : String(s); const w = pdfTW(str, size, bold);
+      const xx = align === "c" ? x - w / 2 : align === "r" ? x - w : x;
+      c += `BT ${col} rg /${bold ? "F2" : "F1"} ${size} Tf ${xx.toFixed(1)} ${y.toFixed(1)} Td (${pdfText(str)}) Tj ET\n`;
+    };
+    const rect = (x, y, w, h, col) => { c += `${col} rg ${x.toFixed(1)} ${y.toFixed(1)} ${w.toFixed(1)} ${h.toFixed(1)} re f\n`; };
+    const line = (x1, y1, x2, y2, col = C(0.8, 0.82, 0.8), lw = 0.5) => { c += `${col} RG ${lw} w ${x1.toFixed(1)} ${y1.toFixed(1)} m ${x2.toFixed(1)} ${y2.toFixed(1)} l S\n`; };
+    t(M, H - M - 12, `Notenliste · ${cls.name}`, 16, true);
+    t(W - M, H - M - 12, `Stand ${stamp}${colPages.length * rowChunks.length > 1 ? ` · Seite ${pages.length + 1}/${colPages.length * rowChunks.length}` : ""}`, 9, false, grey, "r");
+    t(M, H - M - 28, `${cls.students.length} Schüler · ${nGef ? `${nGef} gefährdet (rot markiert, Schnitt ab 4,50)` : "kein Schüler gefährdet"}`, 9, false, nGef ? red : grey);
+    const x0 = M, xName = x0 + nrW, xAvg = xName + nameW, xCols = xAvg + avgW, xEnd = xCols + cp.length * cw;
+    let y = top;
+    rect(x0, y - headH, xEnd - x0, headH, C(0.93, 0.95, 0.94));
+    t(xName + 4, y - headH + 8, "Name", 8, true, grey);
+    t(xAvg + avgW / 2, y - headH + 8, "Ø Schnitt", 8, true, grey, "c");
+    cp.forEach((col, j) => {
+      const cx = xCols + j * cw + cw / 2, title = col.title || "Ohne Titel", words = title.split(/\s+/);
+      let l1 = "", l2 = ""; words.forEach(w => { if (!l2 && pdfTW((l1 + " " + w).trim(), 7, true) <= cw - 4) l1 = (l1 + " " + w).trim(); else l2 = (l2 + " " + w).trim(); });
+      t(cx, y - 12, l1, 7, true, ink, "c", cw - 3); if (l2) t(cx, y - 20, l2, 7, true, ink, "c", cw - 3);
+      t(cx, y - headH + 8, [col.date ? fmtDate(col.date) : "", col.weight > 1 ? `×${col.weight}` : ""].filter(Boolean).join(" · "), 6.5, false, grey, "c", cw - 2);
+    });
+    y -= headH;
+    rc.forEach(r => {
+      const gef = isGef(r.a);
+      if (gef) rect(x0, y - rowH, xEnd - x0, rowH, C(0.99, 0.88, 0.87));
+      else if (r.i % 2) rect(x0, y - rowH, xEnd - x0, rowH, C(0.975, 0.98, 0.975));
+      t(x0 + nrW - 4, y - 11, r.i + 1, 8, false, grey, "r");
+      t(xName + 4, y - 11, r.s.name + (r.s.kl ? ` (${r.s.kl})` : ""), 9, gef, gef ? red : ink, "l", nameW - (gef ? 52 : 8));
+      if (gef) t(xAvg - 4, y - 11, "gefährdet", 7, true, red, "r");
+      if (r.a != null) t(xAvg + avgW / 2, y - 11, fmtNum(r.a), 9, true, r.a >= 4.5 ? red : ink, "c");
+      cp.forEach((col, j) => { const v = cls.cells[col.id]?.[r.s.id]; if (!v) return; const g = gradeNum(v);
+        t(xCols + j * cw + cw / 2, y - 11, v === "f" ? "fehlt" : showGrade(v), v === "f" ? 7 : 9, g >= 5, g >= 5 ? red : v === "f" ? grey : ink, "c", cw - 2); });
+      line(x0, y - rowH, xEnd, y - rowH);
+      y -= rowH;
+    });
+    if (rci === rowChunks.length - 1) {   // Schnitt-Zeile
+      rect(x0, y - rowH - 4, xEnd - x0, rowH + 4, C(0.93, 0.95, 0.94));
+      t(xName + 4, y - 14, "Schnitt", 9, true);
+      const avs = rows.map(r => r.a).filter(a => a != null);
+      if (avs.length) t(xAvg + avgW / 2, y - 14, fmtNum(avs.reduce((a, b) => a + b, 0) / avs.length), 9, true, ink, "c");
+      cp.forEach((col, j) => { const a = colAvg(cls, col); if (a == null) return; const gen = needGen(cls, col);
+        t(xCols + j * cw + cw / 2, y - 12, fmtNum(a), 8.5, true, gen ? red : ink, "c"); if (gen) t(xCols + j * cw + cw / 2, y - 20, "Genehmigung", 5.5, true, red, "c", cw - 2); });
+      y -= rowH + 4;
+      if (cols.some(col => needGen(cls, col))) t(M, y - 14, "„Genehmigung“: Schnitt des schriftlichen Leistungsnachweises schlechter als 4,0 – Genehmigung durch die Schulleitung erforderlich.", 7.5, false, red);
+    }
+    [x0 + nrW, xAvg, xCols].forEach(xx => line(xx, top, xx, y + (rci === rowChunks.length - 1 ? 0 : 0), C(0.75, 0.78, 0.76)));
+    pages.push(c);
+  }));
+  return buildPdf(pages);
+}
+function exportGradesPdf(cls) {
+  try {
+    const blob = new Blob([gradesPdf(cls)], { type: "application/pdf" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = `Notenliste-${String(cls.name).replace(/[^\wäöüÄÖÜß-]+/g, "_")}-${todayISO()}.pdf`;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+    toast("Notenliste (PDF) wird gespeichert");
+  } catch (e) { toast("PDF konnte nicht erstellt werden."); }
+}
+
 function classOverview() {
   const cls = cur(); if (!cls) return;
   const list = cls.students.map(s => ({ s, a: studentAvg(cls, s.id) }));
@@ -1612,7 +1767,7 @@ function classOverview() {
   const bins = [1, 2, 3, 4, 5, 6].map(g => withA.filter(x => Math.min(6, Math.max(1, Math.round(x.a + 1e-9))) === g).length);
   const mx = Math.max(1, ...bins);
   const ranges = ["1,00–1,49", "1,50–2,49", "2,50–3,49", "3,50–4,49", "4,50–5,49", "ab 5,50"];
-  const crit = withA.filter(x => x.a >= 4.5).sort((a, b) => b.a - a.a);
+  const crit = withA.filter(x => isGef(x.a)).sort((a, b) => b.a - a.a);
   const gcols = cls.columns.filter(c => c.type === "grade");
   modal(`<h3>Übersicht · ${esc(cls.name)}</h3>
     <div class="row" style="gap:10px;margin-bottom:14px">
@@ -1634,8 +1789,9 @@ function classOverview() {
       }).join("") : `<p style="color:var(--muted);margin:4px 0">Kein Schüler hat einen Schnitt von 4,50 oder schlechter.</p>`}
     </div>
     ${noA.length ? `<p class="hint" style="margin:0">Noch ohne Noten: ${noA.map(x => esc(x.s.name)).join(", ")}</p>` : ""}
-    <div class="actions"><button class="btn primary" data-x="close">Fertig</button></div>`,
+    <div class="actions"><button class="btn left" data-pdf>📄 Notenliste als PDF</button><button class="btn primary" data-x="close">Fertig</button></div>`,
     (m, close) => m.addEventListener("click", e => {
+      if (e.target.closest("[data-pdf]")) { exportGradesPdf(cls); return; }
       const ov = e.target.closest("[data-ov]"); if (ov) { close(); studentDialog(ov.dataset.ov); return; }
       if (e.target.closest("[data-ovoll]")) { close(); checkComplete(); return; }
       if (e.target.closest("[data-x]")) close();
@@ -2176,6 +2332,7 @@ function gradeList(colId) {
   modal(`<h3>${esc(col.title || "Note")}</h3><p class="hint">${col.date ? fmtDate(col.date) : ""}</p>
     ${swKind(col) ? (() => { const vals = cls.cells[colId] || {}, miss = cls.students.filter(s => !vals[s.id] || vals[s.id] === "f"), part = miss.length && miss.length < cls.students.length;
       return `<button class="btn primary" data-gsw="${part ? miss.map(s => s.id).join(",") : ""}" style="width:100%;min-height:48px;margin-bottom:12px">⏱ Stoppuhr – ${part ? `nur die ${miss.length} fehlenden Schüler messen` : "alle gleichzeitig messen"}</button>`; })() : ""}
+    ${needGen(cls, col) ? `<div class="genbox"><b>⚠ Genehmigung erforderlich</b>Der Schnitt dieses schriftlichen Leistungsnachweises liegt bei ${fmtNum(colAvg(cls, col))} und damit schlechter als 4,0. Die Bewertung muss von der Schulleitung genehmigt werden.</div>` : ""}
     ${canDone(col) ? `<label class="check donetgl"><input type="checkbox" id="gdone"${col.done ? " checked" : ""}> <span><b style="color:var(--ok)">✓</b> Notengebung abgeschlossen</span></label>` : ""}
     ${isMitNote(col) ? `<div class="field"><label>Vorschlag aus der Mitarbeit</label><div id="msug"></div></div>` : ""}
     ${/abschrift/i.test(col.title || "") ? `<div class="field"><label>Erforderliche Anschläge</label><p style="margin:2px 0 0;font-size:17px">${anschlaege(cls, col) ? `<b>${anschlaege(cls, col).toLocaleString("de-DE")} Anschläge</b> <span style="color:var(--muted)">· Jgst. ${jgstFromName(cls.name)}, ${colHalf(col).split("-")[1]}. Halbjahr</span>` : `<span style="color:var(--muted)">Keine Angabe – Jahrgangsstufe 5–9 im Klassennamen nötig.</span>`}</p></div><div id="pscale" class="hidden"></div>`
@@ -2411,6 +2568,7 @@ document.addEventListener("click", e => {
     if (act === "names") return namesDialog();
     if (act === "addstu") return addStudentDialog();
     if (act === "voll") return checkComplete();
+    if (act === "undo") return doUndo();
     if (act === "info") return infoDialog();
     if (act === "addcol") return columnDialog(null);
     if (act === "seats") return openSeats();
@@ -2437,7 +2595,7 @@ document.addEventListener("click", e => {
     const cls = cur(), { c, s, mit } = mb.dataset;
     cls.cells[c] = cls.cells[c] || {};
     const v = Object.assign({ p: 0, m: 0 }, cls.cells[c][s]);
-    if (mit === "+") v.p++; else if (mit === "*") v.s = (v.s || 0) + 1; else v.m++;
+    if (mit === "+") v.p++; else if (mit === "*") v.s = (v.s || 0) + 1; else if (mit === "o") v.n = (v.n || 0) + 1; else v.m++;
     cls.cells[c][s] = v; store.save("c_" + cls.id); render(); return;
   }
   const ftb = e.target.closest("tfoot td")?.querySelector(".footbtn");
@@ -2492,7 +2650,7 @@ async function moreDialog() {
       ${isSport(cls) ? `<p style="margin:2px 0 0">Festgelegt für Sport: <b>1 FKO-Note</b> und <b>2 beliebige weitere Noten</b> pro Halbjahr.</p>`
         : `<div style="display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center">${reqCats(cls).map(c => `<span>${c.l}</span>${c.fix != null ? `<div class="stepper fixed" title="festgelegt"><button disabled>−</button><b>${c.fix}</b><button disabled>+</button></div>` : `<div class="stepper"><button data-req="${c.k}" data-d="-1">−</button><b id="req_${c.k}">${reqOf(cls, c) || 0}</b><button data-req="${c.k}" data-d="1">+</button></div>`}`).join("")}</div>`}
       <p class="hint" style="margin:6px 0 0">${isSport(cls) ? "" : "0 = wird nicht geprüft. "}Geprüft wird mit „✓ Vollständigkeit prüfen“ unten links in der Tabelle.</p></div>
-    <div class="field"><label>Schüler</label><div class="row"><button class="btn primary" data-x="names">Namensliste einfügen</button><button class="btn" data-x="sort">Liste alphabetisch sortieren</button></div></div>
+    <div class="field"><label>Schüler</label><div class="row"><button class="btn primary" data-x="names">Namensliste einfügen</button><button class="btn" data-x="sort">Liste alphabetisch sortieren</button><button class="btn" data-x="pdf">📄 Notenliste als PDF</button></div></div>
     <div class="field"><label>Aktuelle Klasse</label><div class="row"><button class="btn" data-x="csv">Als Tabelle kopieren (Excel)</button></div></div>
     <div class="field"><label>Sicherung</label><div class="row"><button class="btn primary" data-x="file">Sicherung als Datei speichern</button><button class="btn" data-x="backup">Sicherung kopieren</button><button class="btn" data-x="import">Sicherung importieren…</button></div>
       <button class="btn danger" data-x="wipe" style="margin-top:8px">Alle Daten auf diesem Gerät löschen…</button>
@@ -2523,6 +2681,7 @@ async function moreDialog() {
       }
       if (x === "csv") copyText(classCSV(cls), "Tabelle");
       if (x === "sort") { cls.students.sort(byName); store.save("c_" + cls.id); render(); toast("Sortiert"); }
+      if (x === "pdf") exportGradesPdf(cls);
       if (x === "backup" || x === "file") {
         const data = { app: "klassen-organizer", version: 1, exported: new Date().toISOString(), classes: S.order.map(id => S.classes[id]), general: S.gen.events };
         if ($("#bph", m).checked) {
@@ -2621,6 +2780,7 @@ seatsEl.innerHTML = `
     <span id="gapRow" class="row" style="gap:6px"></span>
     <span style="margin-left:auto"></span>
     <div class="seg snm" id="snm"><button data-s="nm-first">Vorname</button><button data-s="nm-full">Vor- und Nachname</button></div>
+    <div class="seg snm" id="slow" title="Schüler mit wenigen Mitarbeits-Einträgen hervorheben"><button data-s="low-on">Wenig +/− markieren</button><button data-s="low-off">Aus</button></div>
     <button class="btn" data-s="flip" title="Ansicht drehen">⇅ Drehen</button>
     <button class="btn danger" data-s="clear">Leeren</button>
   </div>
@@ -2659,6 +2819,14 @@ function renderSeats() {
   if (st.flip) { rows.reverse(); cols.reverse(); }
   let grid = "";
   const mc = cls.cells[mitCol(cls).id] || {};
+  // Wenig Mitarbeits-Einträge: unteres Viertel der Klasse und unter dem Durchschnitt
+  const lowOn = st.low !== 0, low = new Set();
+  document.querySelectorAll("#slow button").forEach(b => b.classList.toggle("on", (b.dataset.s === "low-on") === lowOn));
+  if (lowOn && cls.students.length > 2) {
+    const cnt = cls.students.map(s => [s.id, mitCount(mc[s.id])]), vals = cnt.map(x => x[1]).sort((a, b) => a - b);
+    const avg = vals.reduce((a, b) => a + b, 0) / vals.length, thr = vals[Math.floor(vals.length * 0.25)];
+    cnt.forEach(([id, n]) => { if (n <= thr && n < avg) low.add(id); });
+  }
   const tmpl = [];
   cols.forEach((c, i) => { if (i > 0 && st.gaps.includes(Math.min(c, cols[i - 1]))) tmpl.push("minmax(10px,.3fr)"); tmpl.push("minmax(0,1fr)"); });
   rows.forEach(r => cols.forEach((c, i) => {
@@ -2666,7 +2834,7 @@ function renderSeats() {
     const k = r + "_" + c, s = smap.get(st.seats[k]);
     const sel = seatSel && seatSel.from === k ? " sel" : "", tgt = seatSel && !sel ? " target" : "";
     grid += s
-      ? `<div class="seat full${sel}" data-seat="${k}" role="button">${avatar(s, "ph")}<span class="nm${nmFull ? "" : " first"}">${esc(nmFull ? (n => (n.first + " " + (n.first === n.last ? "" : n.last)).trim())(splitName(s.name)) : seatName(cls, s))}</span><div class="smit"><button data-smit="-" data-sid="${s.id}" aria-label="Mitarbeit minus">−</button><button class="sdots" data-smv="${s.id}" aria-label="Mitarbeit-Übersicht">${mitDots(mc[s.id])}</button><button data-smit="+" data-sid="${s.id}" aria-label="Mitarbeit plus">+</button>${mitCol(cls).nostar ? "" : `<button class="sstar" data-smit="*" data-sid="${s.id}" aria-label="Stern (zählt +2)"><svg class="stsvg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.5 4.1 1.2 5.9L12 16.5l-5.3 2.9 1.2-5.9-4.5-4.1 6-.7z" fill="currentColor"/></svg></button>`}</div></div>`
+      ? `<div class="seat full${sel}${low.has(s.id) ? " low" : ""}" data-seat="${k}" role="button">${low.has(s.id) ? `<span class="lowtag" title="Bisher wenige Mitarbeits-Einträge">wenig</span>` : ""}${avatar(s, "ph")}<span class="nm${nmFull ? "" : " first"}">${esc(nmFull ? (n => (n.first + " " + (n.first === n.last ? "" : n.last)).trim())(splitName(s.name)) : seatName(cls, s))}</span><div class="smit"><button data-smit="-" data-sid="${s.id}" aria-label="Mitarbeit minus">−</button><button class="sneu" data-smit="o" data-sid="${s.id}" aria-label="Mitarbeit neutral"><i></i></button><button class="sdots" data-smv="${s.id}" aria-label="Mitarbeit-Übersicht">${mitDots(mc[s.id])}</button><button data-smit="+" data-sid="${s.id}" aria-label="Mitarbeit plus">+</button>${mitCol(cls).nostar ? "" : `<button class="sstar" data-smit="*" data-sid="${s.id}" aria-label="Stern (zählt +2)"><svg class="stsvg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2l2.6 5.5 6 .7-4.5 4.1 1.2 5.9L12 16.5l-5.3 2.9 1.2-5.9-4.5-4.1 6-.7z" fill="currentColor"/></svg></button>`}</div></div>`
       : `<div class="seat${tgt}" data-seat="${k}" role="button"></div>`;
   }));
   const board = `<div class="board">Tafel · Pult</div>`;
@@ -2712,7 +2880,7 @@ seatsEl.addEventListener("click", async e => {
     const col = mitCol(cls), sid = sm.dataset.sid;
     cls.cells[col.id] = cls.cells[col.id] || {};
     const v = Object.assign({ p: 0, m: 0 }, cls.cells[col.id][sid]);
-    if (sm.dataset.smit === "+") v.p++; else if (sm.dataset.smit === "*") v.s = (v.s || 0) + 1; else v.m++;
+    if (sm.dataset.smit === "+") v.p++; else if (sm.dataset.smit === "*") v.s = (v.s || 0) + 1; else if (sm.dataset.smit === "o") v.n = (v.n || 0) + 1; else v.m++;
     cls.cells[col.id][sid] = v; save(); return;
   }
   const seat = e.target.closest("[data-seat]"), chip = e.target.closest("[data-chip]");
@@ -2737,6 +2905,7 @@ seatsEl.addEventListener("click", async e => {
   if (s === "c-" && st.cols > 1) { st.cols--; save(); }
   if (s === "c+" && st.cols < 12) { st.cols++; save(); }
   if (s === "nm-first" || s === "nm-full") { st.nm = s === "nm-full" ? "full" : "first"; save(); }
+  if (s === "low-on" || s === "low-off") { st.low = s === "low-on" ? 1 : 0; save(); }
   if (s === "flip") { st.flip = !st.flip; save(); toast(st.flip ? "Ansicht: vom Pult aus" : "Ansicht: von hinten (Schülersicht)"); }
   if (s === "clear") { if (Object.keys(st.seats).length && await confirmDlg("Alle Schüler werden von ihren Plätzen genommen.", "Leeren")) { st.seats = {}; seatSel = null; save(); } }
   if (s === "shuffle") {
