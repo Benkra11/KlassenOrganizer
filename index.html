@@ -2677,7 +2677,14 @@ function positionPad() {
   btn.scrollIntoView({ block: "nearest", inline: "nearest" });
   const r = btn.getBoundingClientRect(), pad = $("#pad"), pw = 272, ph = pad.offsetHeight || 330;
   const vw = window.innerWidth, vh = window.innerHeight;
-  let left = r.right + 10, top = r.top - 40;
+  // Ruhiges Notenfenster: bleibt stehen, solange es die aktuelle Zelle nicht verdeckt und ganz sichtbar ist
+  if (!pad.classList.contains("hidden") && pad.dataset.col === col.id) {
+    const pr = pad.getBoundingClientRect();
+    const covers = !(pr.right <= r.left || pr.left >= r.right || pr.bottom <= r.top || pr.top >= r.bottom);
+    if (!covers && pr.top >= 0 && pr.bottom <= vh && pr.left >= 0 && pr.right <= vw) return;
+  }
+  pad.dataset.col = col.id;
+  let left = r.right + 10, top = Math.max(8, Math.min(r.top - 40, vh / 2 - ph / 2));
   if (left + pw > vw - 8) left = r.left - pw - 10;
   if (left < 8) { left = Math.min(Math.max(8, r.left), vw - pw - 8); top = r.bottom + 8; if (top + ph > vh - 8) top = r.top - ph - 8; }
   top = Math.min(Math.max(8, top), vh - ph - 8);
