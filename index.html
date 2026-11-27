@@ -2973,6 +2973,7 @@ seatsEl.innerHTML = `
     <span style="margin-left:auto"></span>
     <div class="seg snm" id="snm"><button data-s="nm-first">Vorname</button><button data-s="nm-full">Vor- und Nachname</button></div>
     <div class="seg snm" id="slow" title="Schüler mit wenigen Mitarbeits-Einträgen hervorheben"><button data-s="low-on">Wenig +/− markieren</button><button data-s="low-off">Aus</button></div>
+    <div class="seg snm" id="srg" title="Abstand zwischen den Reihen"><button data-s="rg-0">Reihen eng</button><button data-s="rg-1">mit Abstand</button><button data-s="rg-2">großer Abstand</button></div>
     <button class="btn" data-s="flip" title="Ansicht drehen">⇅ Drehen</button>
     <button class="btn danger" data-s="clear">Leeren</button>
   </div>
@@ -3014,6 +3015,7 @@ function renderSeats() {
   // Wenig Mitarbeits-Einträge: unteres Viertel der Klasse und unter dem Durchschnitt
   const lowOn = st.low !== 0, low = new Set();
   document.querySelectorAll("#slow button").forEach(b => b.classList.toggle("on", (b.dataset.s === "low-on") === lowOn));
+  document.querySelectorAll("#srg button").forEach(b => b.classList.toggle("on", b.dataset.s === "rg-" + (st.rg || 0)));
   if (lowOn && cls.students.length > 2) {
     const cnt = cls.students.map(s => [s.id, mitCount(mc[s.id])]), vals = cnt.map(x => x[1]).sort((a, b) => a - b);
     const avg = vals.reduce((a, b) => a + b, 0) / vals.length, thr = vals[Math.floor(vals.length * 0.25)];
@@ -3030,7 +3032,7 @@ function renderSeats() {
       : `<div class="seat${tgt}" data-seat="${k}" role="button"></div>`;
   }));
   const board = `<div class="board">Tafel · Pult</div>`;
-  $("#room").innerHTML = (st.flip ? "" : board) + `<div class="grid" style="grid-template-columns:${tmpl.join(" ")};grid-template-rows:repeat(${st.rows},minmax(0,1fr))">${grid}</div>` + (st.flip ? board : "");
+  $("#room").innerHTML = (st.flip ? "" : board) + `<div class="grid" style="grid-template-columns:${tmpl.join(" ")};grid-template-rows:repeat(${st.rows},minmax(0,1fr));row-gap:${[8, 26, 48][st.rg || 0]}px">${grid}</div>` + (st.flip ? board : "");
   const pool = cls.students.filter(s => !seated.has(s.id));
   $("#pool").classList.toggle("hidden", pool.length === 0);
   $("#pool").innerHTML = `<h3>Ohne Platz (${pool.length})</h3><p>${seatSel ? (seatSel.from === "pool" ? "Tippe auf einen Platz." : "Hier tippen, um den Platz zu räumen.") : "Schüler antippen, dann einen Platz wählen. Besetzte Plätze werden getauscht."}</p>` +
@@ -3098,6 +3100,7 @@ seatsEl.addEventListener("click", async e => {
   if (s === "c+" && st.cols < 12) { st.cols++; save(); }
   if (s === "nm-first" || s === "nm-full") { st.nm = s === "nm-full" ? "full" : "first"; save(); }
   if (s === "low-on" || s === "low-off") { st.low = s === "low-on" ? 1 : 0; save(); }
+  if (/^rg-\d$/.test(s)) { st.rg = +s.slice(3); if (!st.rg) delete st.rg; save(); }
   if (s === "flip") { st.flip = !st.flip; save(); toast(st.flip ? "Ansicht: vom Pult aus" : "Ansicht: von hinten (Schülersicht)"); }
   if (s === "clear") { if (Object.keys(st.seats).length && await confirmDlg("Alle Schüler werden von ihren Plätzen genommen.", "Leeren")) { st.seats = {}; seatSel = null; save(); } }
   if (s === "shuffle") {
