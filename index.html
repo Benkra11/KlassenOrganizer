@@ -574,7 +574,7 @@ function cleanClass(d) {
   const c = {
     id: String(d.id), name: String(d.name || "Klasse"),
     students: Array.isArray(d.students) ? d.students.map(s => ({ id: String(s.id), name: String(s.name || ""), kl: String(s.kl || ""), photo: !!s.photo, sex: s.sex === "m" || s.sex === "w" ? s.sex : "" })) : [],
-    columns: Array.isArray(d.columns) ? d.columns.map(c => ({ id: String(c.id), title: String(c.title || "").replace(/^\d+\.\s*(Ausfrage)/i, "$1"), type: ["check","grade","mit","text"].includes(c.type) ? c.type : "check", date: c.date || "", weight: Number(c.weight) || 1, ...(c.nostar ? { nostar: true } : {}), ...(c.done ? { done: true } : {}), ...(c.hj ? { hj: String(c.hj) } : {}), ...(c.sport && typeof c.sport === "object" ? { sport: { test: ["fit", "fitd"].includes(c.sport.test) ? c.sport.test : "la", disc: String(c.sport.disc || "") } } : {}), ...(c.scale && typeof c.scale === "object" ? { scale: { max: Number(c.scale.max) || 0, min: Object.fromEntries([1, 2, 3, 4, 5, 6].map(g => [g, c.scale.min?.[g] === "" || c.scale.min?.[g] == null ? "" : Number(c.scale.min[g])])) } } : {}) })) : [],
+    columns: Array.isArray(d.columns) ? d.columns.map(c => ({ id: String(c.id), title: String(c.title || "").replace(/^\d+\.\s*(Ausfrage)/i, "$1"), type: ["check","grade","mit","text"].includes(c.type) ? c.type : "check", date: c.date || "", weight: Number(c.weight) || 1, ...(c.nostar ? { nostar: true } : {}), ...(c.done ? { done: true } : {}), ...(c.hj ? { hj: String(c.hj) } : c.type === "mit" && !c.date ? { hj: halfOf(todayISO()).key } : {}), ...(c.sport && typeof c.sport === "object" ? { sport: { test: ["fit", "fitd"].includes(c.sport.test) ? c.sport.test : "la", disc: String(c.sport.disc || "") } } : {}), ...(c.scale && typeof c.scale === "object" ? { scale: { max: Number(c.scale.max) || 0, min: Object.fromEntries([1, 2, 3, 4, 5, 6].map(g => [g, c.scale.min?.[g] === "" || c.scale.min?.[g] == null ? "" : Number(c.scale.min[g])])) } } : {}) })) : [],
     cells: d.cells && typeof d.cells === "object" ? JSON.parse(JSON.stringify(d.cells)) : {},
     // Tafel/Pult standardmäßig unten (fv markiert, dass diese Voreinstellung schon übernommen wurde)
     seating: (st => (st.fv ? st : Object.assign(st, { flip: true, fv: 1 })))(Object.assign({ rows: 5, cols: 6, seats: {}, flip: true }, d.seating ? JSON.parse(JSON.stringify(d.seating)) : {})),
@@ -601,7 +601,7 @@ function normalize() {
   S.order.forEach(id => {
     const c = S.classes[id]; if (c.mitInit) return;
     c.mitInit = true;
-    if (!c.columns.some(x => x.type === "mit")) c.columns.unshift({ id: rid(), title: "Mitarbeit", type: "mit", date: "", weight: 1 });
+    if (!c.columns.some(x => x.type === "mit")) c.columns.unshift({ id: rid(), title: "Mitarbeit", type: "mit", date: "", hj: halfOf(todayISO()).key, weight: 1 });
     store.save("c_" + id);
   });
   S.order.forEach(id => {
@@ -612,10 +612,20 @@ function normalize() {
   });
 }
 const cur = () => S.classes[S.active] || null;
+// Mitarbeit-Spalte des aktuellen Halbjahrs; beginnt ein neues Halbjahr, wird automatisch eine neue angelegt
 function mitCol(cls) {
-  const cols = cls.columns.filter(c => c.type === "mit");
-  if (cols.length) return cols[cols.length - 1];
-  const c = { id: rid(), title: "Mitarbeit", type: "mit", date: "", weight: 1 }; cls.columns.unshift(c); return c;
+  const hk = halfOf(todayISO()).key, cols = cls.columns.filter(c => c.type === "mit");
+  const now = cols.filter(c => colHalf(c) === hk);
+  if (now.length) return now[now.length - 1];
+  const h = hk.split("-")[1], c = { id: rid(), title: cols.length ? `Mitarbeit ${h}. HJ` : "Mitarbeit", type: "mit", date: "", hj: hk, weight: 1 };
+  if (cols.length) {
+    const last = cols[cols.length - 1]; if (last.nostar) c.nostar = true;
+    cols.forEach(o => { if (/^Mitarbeit$/i.test((o.title || "").trim())) o.title = `Mitarbeit ${colHalf(o).split("-")[1]}. HJ`; });
+    cls.columns.splice(cls.columns.indexOf(last) + 1, 0, c);
+    if (booted) setTimeout(() => toast(`Neues Halbjahr: Mitarbeit wird jetzt in „${c.title}“ gesammelt`), 300);
+  } else cls.columns.unshift(c);
+  if (booted) store.save("c_" + cls.id);
+  return c;
 }
 // Mitarbeit: p = Plus, m = Minus, n = neutral (zählt 0), s = Sterne (★ zählt wie +2)
 const mitN = v => (v?.p || 0) - (v?.m || 0) + 2 * (v?.s || 0), mitAny = v => !!(v?.p || v?.m || v?.s || v?.n);
@@ -1219,6 +1229,7 @@ function render() {
   normalize();
   renderTabs();
   const cls = cur(), main = $("#main"), bar = $("#bar");
+  if (cls && booted && cls.columns.some(c => c.type === "mit")) mitCol(cls);   // neues Halbjahr → neue Mitarbeit-Spalte
   if (cls && UNDO.snap["c_" + cls.id] == null) UNDO.snap["c_" + cls.id] = undoSnap(cls.id);
   updUndo();
   if (!cls) {
@@ -1650,7 +1661,7 @@ function columnDialog(col) {
       const ok = () => {
         const title = ti.value.trim() || ({ grade: "Note", check: "Abhaken", mit: "Mitarbeit", text: "Notiz" })[type];
         if (isNew) {
-          const c = { id: rid(), title, type, date: $("#cd", m).value, weight: type === "grade" ? weight : 1, ...(type === "mit" && !star ? { nostar: true } : {}) };
+          const c = { id: rid(), title, type, date: $("#cd", m).value, weight: type === "grade" ? weight : 1, ...(type === "mit" && !star ? { nostar: true } : {}), ...(type === "mit" ? { hj: halfOf($("#cd", m).value || todayISO()).key } : {}) };
           if (type === "grade" && sportCfg) c.sport = { ...sportCfg };
           else if (type === "grade" && ["#cdisc", "#cfit"].some(id => $(id, m) && !$(id, m).classList.contains("hidden"))) { toast("Bitte eine Disziplin wählen."); return; }
           cls.columns.push(c);
@@ -2498,19 +2509,20 @@ function ausfNeeds(cls, col) {
   return need;
 }
 const isMitNote = col => col && col.type === "grade" && /mitarbeit-note|fko/i.test(col.title || "");   // FKO-Note verhält sich wie Mitarbeit-Note
-function mitNet(cls, sid) {
+function mitNet(cls, sid, hk = halfOf(todayISO()).key) {   // nur Mitarbeit des jeweiligen Halbjahrs
   let any = false, n = 0;
-  cls.columns.filter(c => c.type === "mit").forEach(c => { const v = cls.cells[c.id]?.[sid]; if (mitAny(v)) { any = true; n += mitN(v); } });
+  cls.columns.filter(c => c.type === "mit" && colHalf(c) === hk).forEach(c => { const v = cls.cells[c.id]?.[sid]; if (mitAny(v)) { any = true; n += mitN(v); } });
   return any ? n : null;
 }
-function mitScale(cls) {
-  const nets = cls.students.map(s => mitNet(cls, s.id)).filter(n => n != null);
+function mitScale(cls, hk) {
+  const nets = cls.students.map(s => mitNet(cls, s.id, hk)).filter(n => n != null);
   const best = nets.length ? Math.max(...nets) : null;
   if (best == null || best <= 0) return { best, t1: Infinity, t2: Infinity };
   return { best, t1: Math.max(1, Math.ceil(best * 2 / 3)), t2: Math.max(1, Math.ceil(best / 3)) };
 }
-function mitSuggest(cls, sid, sc = mitScale(cls)) {
-  const n = mitNet(cls, sid); if (n == null || n < 0) return null;   // negativ: kein Vorschlag (Note 4–6 selbst vergeben)
+function mitSuggest(cls, sid, sc, hk) {
+  sc = sc || mitScale(cls, hk);
+  const n = mitNet(cls, sid, hk); if (n == null || n < 0) return null;   // negativ: kein Vorschlag (Note 4–6 selbst vergeben)
   return n >= sc.t1 ? 1 : n >= sc.t2 ? 2 : 3;
 }
 const fmtNet = n => n == null ? "–" : (n > 0 ? "+" : n < 0 ? "−" : "±") + Math.abs(n);
@@ -2559,9 +2571,9 @@ function gradeList(colId) {
       draw();
       if (isMitNote(col)) {
         const drawSug = () => {
-          const sc = mitScale(cls), vals = cls.cells[colId] || {};
+          const hk = colHalf(col), sc = mitScale(cls, hk), vals = cls.cells[colId] || {};
           const key = sc.best == null ? "Noch keine Mitarbeit eingetragen." : sc.best <= 0 ? `Beste Mitarbeit ${fmtNet(sc.best)} → alle ab ±0 bekommen eine 3.` : `Beste Mitarbeit <b>${fmtNet(sc.best)}</b> → <b>1</b> ab ${fmtNet(sc.t1)} · <b>2</b> ab ${fmtNet(sc.t2)} · <b>3</b> ab ±0 · darunter kein Vorschlag`;
-          const rows = cls.students.map(s => ({ s, n: mitNet(cls, s.id), g: mitSuggest(cls, s.id, sc), v: vals[s.id] }));
+          const rows = cls.students.map(s => ({ s, n: mitNet(cls, s.id, hk), g: mitSuggest(cls, s.id, sc, hk), v: vals[s.id] }));
           const open = rows.filter(r => r.g && !r.v).length;
           $("#msug", m).innerHTML = `<p class="hint" style="margin:0 0 8px">${key}</p>
             <div style="max-height:240px;overflow:auto;border:1px solid var(--line);border-radius:10px">${rows.map(r => `<div style="display:flex;align-items:center;gap:10px;padding:5px 10px;border-bottom:1px solid var(--line)">
@@ -2577,7 +2589,7 @@ function gradeList(colId) {
           if (!one && !all) return;
           cls.cells[colId] = cls.cells[colId] || {};
           if (one) cls.cells[colId][one.dataset.msug] = one.dataset.g;
-          else { const sc = mitScale(cls); cls.students.forEach(s => { const g = mitSuggest(cls, s.id, sc); if (g && !cls.cells[colId][s.id]) cls.cells[colId][s.id] = String(g); }); }
+          else { const hk = colHalf(col), sc = mitScale(cls, hk); cls.students.forEach(s => { const g = mitSuggest(cls, s.id, sc, hk); if (g && !cls.cells[colId][s.id]) cls.cells[colId][s.id] = String(g); }); }
           store.save("c_" + cls.id); render(); drawSug(); draw();
         });
       }
@@ -2661,7 +2673,7 @@ function positionPad() {
   if (!stu || !col) return closePad();
   const v = cls.cells[col.id]?.[stu.id];
   $("#padWho").textContent = stu.name;
-  const sg = isMitNote(col) ? mitSuggest(cls, stu.id) : null;
+  const sg = isMitNote(col) ? mitSuggest(cls, stu.id, null, colHalf(col)) : null;
   // Punkte-Modus nur bei Stegreifaufgabe, Kurzarbeit, Schulaufgabe
   const ptsCol = isPtsCol(col), pm = padIsPts();
   $("#padMode").classList.toggle("hidden", !ptsCol);
@@ -2676,7 +2688,7 @@ function positionPad() {
     $("#padPtsG").textContent = over ? "zu viele Punkte" : g ? "Note " + showGrade(g) : "";
     $("#padPtsG").style.color = over ? "var(--no)" : "";
   }
-  $("#padCur").textContent = (v ? showGrade(v) : "") + (isMitNote(col) ? `${v ? " · " : ""}Vorschlag ${sg ?? "–"} (${fmtNet(mitNet(cls, stu.id))})` : "");
+  $("#padCur").textContent = (v ? showGrade(v) : "") + (isMitNote(col) ? `${v ? " · " : ""}Vorschlag ${sg ?? "–"} (${fmtNet(mitNet(cls, stu.id, colHalf(col)))})` : "");
   const btn = document.querySelector(`.cell[data-c="${col.id}"][data-s="${stu.id}"]`); if (!btn) return;
   btn.scrollIntoView({ block: "nearest", inline: "nearest" });
   const r = btn.getBoundingClientRect(), pad = $("#pad"), pw = 272, ph = pad.offsetHeight || 330;
